@@ -11,7 +11,7 @@ func main() {
 	config.InitDB()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Berjalan")
+		fmt.Fprintf(w, "Berjalan dong, Qall selanjutnya apa?")
 	})
 
 	fmt.Println("Server berjalan 8080")

@@ -14,6 +14,7 @@ type User struct {
 	UpdatedAt  time.Time
 	Userkonsul []Konsultasi `gorm:"foreignKey:UserID"`
 	LogMakanan []LogMakanan `gorm:"foreignKey:UserID"`
+	Informasi  []Informasi  `gorm:"foreignKey:UserID"`
 }
 
 type Anak struct {
@@ -25,6 +26,8 @@ type Anak struct {
 	TinggiAnak float64      `gorm:"type:decimal(10,2); not null"`
 	BBAnak     float64      `gorm:"type:float; not null"`
 	GenderAnak string       `gorm:"type:varchar(100); not null"`
+	LingkarL   float64      `gorm:"type:float; not null"`
+	LingkarK   float64      `gorm:"type:float; not null"`
 }
 
 type Makanan struct {
@@ -66,4 +69,5 @@ type Informasi struct {
 	ID        uint   `gorm:"primaryKey"`
 	Ringkasan string `gorm:"type:longtext; not null"`
 	Judul     string `gorm:"type:varchar(225); not null"`
+	UserID    uint
 }
