@@ -2,13 +2,14 @@ package main
 
 import (
 	"bcc-geazy/config"
+	mysql "bcc-geazy/pkg/mysql"
 	"fmt"
 	"net/http"
 )
 
 func main() {
 	config.SambungDatabase()
-	config.InitDB()
+	mysql.Mysql()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Berjalan dong, Qall selanjutnya apa?")
