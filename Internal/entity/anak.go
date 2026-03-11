@@ -1,14 +1,18 @@
 package entity
 
+import (
+	"github.com/google/uuid"
+)
+
 type Anak struct {
-	ID         uint `gorm:"primaryKey"`
-	UserID     uint
-	Loganak    []LogMakanan `gorm:"foreignKey:AnakID"`
-	Makanan    []Makanan    `gorm:"foreignKey:AnakID"`
-	NamaAnak   string       `gorm:"type:varchar(225); not null"`
-	TinggiAnak float64      `gorm:"type:decimal(10,2); not null"`
-	BBAnak     float64      `gorm:"type:float; not null"`
-	GenderAnak string       `gorm:"type:varchar(100); not null"`
-	LingkarL   float64      `gorm:"type:float; not null"`
-	LingkarK   float64      `gorm:"type:float; not null"`
+	ID            uint         `gorm:"primaryKey"`
+	UserID        uuid.UUID    `gorm:"type:uuid;not null;constraint;OnDelete:CASCADE"`
+	LogMakanan    []LogMakanan `gorm:"foreignKey:AnakID"`
+	Makanan       []Makanan    `gorm:"foreignKey:AnakID"`
+	Nama          string       `gorm:"type:varchar(225); not null"`
+	Tinggi        float64      `gorm:"type:decimal(10,2); not null"`
+	BeratBadan    float64      `gorm:"type:decimal(10,2); not null"`
+	Gender        string       `gorm:"type:varchar(10); not null"`
+	LingkarLengan float64      `gorm:"type:decimal(10,2); not null"`
+	LingkarKepala float64      `gorm:"type:decimal(10,2); not null"`
 }

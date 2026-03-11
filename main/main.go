@@ -9,7 +9,7 @@ import (
 
 func main() {
 	config.SambungDatabase()
-	mysql.Mysql()
+	mysql.StartMySQL()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Berjalan dong, Qall selanjutnya apa?")

@@ -1,22 +1,15 @@
 package config
 
 import (
-	"fmt"
+	"log"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/joho/godotenv"
 )
 
-var DB *gorm.DB
-
 func SambungDatabase() {
-	dsn := "root:@tcp(127.0.0.1:3306)/db_gizi?charset=utf8mb4&parseTime=True&loc=Local"
-	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	err := godotenv.Load()
 
 	if err != nil {
-		panic("Gagal koneksi ke database!")
+		log.Fatal("Tidak Valid .env File")
 	}
-
-	fmt.Println("Koneksi Database Berhasil!")
-	DB = database
 }

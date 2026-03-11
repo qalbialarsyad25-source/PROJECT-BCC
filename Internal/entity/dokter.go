@@ -1,7 +1,11 @@
 package entity
 
+import (
+	"github.com/google/uuid"
+)
+
 type Dokter struct {
-	ID           uint         `gorm:"primaryKey"`
-	NamaDokter   string       `gorm:"type:varchar(225); not null"`
-	DokterKonsul []Konsultasi `gorm:"foreignKey:DokterID"`
+	ID           uuid.UUID    `gorm:"type:uuid;primaryKey"`
+	Nama         string       `gorm:"type:varchar(225); not null"`
+	KonsultasiID []Konsultasi `gorm:"foreignKey:DokterID"`
 }
