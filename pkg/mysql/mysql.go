@@ -1,7 +1,7 @@
 package sql
 
 import (
-	"bcc-geazy/Internal/entity"
+	"bcc-geazy/internal/entity"
 	"fmt"
 	"log"
 	"os"
