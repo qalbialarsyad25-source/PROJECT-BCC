@@ -12,8 +12,8 @@ type User struct {
 	Nama           string       `gorm:"type:varchar(225); not null"`
 	Email          string       `gorm:"uniqueIndex;type:varchar(225); not null"`
 	Anak           []Anak       `gorm:"foreignKey:UserID"`
-	DibuatPada     time.Time    `gorm:"type:timestamp;not null;autoCreatedTime"`
-	DiperbaruiPada time.Time    `gorm:"type:timestamp;not null;autoCreatedTime"`
+	DibuatPada     time.Time    `gorm:"autoCreateTime"`
+	DiperbaruiPada time.Time    `gorm:"autoCreateTime"`
 	Konsultasi     []Konsultasi `gorm:"foreignKey:UserID"`
 	Informasi      []Informasi  `gorm:"foreignKey:UserID"`
 }
