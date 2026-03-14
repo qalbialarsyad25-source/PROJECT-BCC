@@ -5,7 +5,7 @@ import (
 )
 
 type Anak struct {
-	ID            uuid.UUID `gorm:"type:char(36);primaryKey"`
+	Id            uuid.UUID `gorm:"type:char(36);primaryKey"`
 	UserID        uuid.UUID `gorm:"type:char(36);not null;constraint;OnDelete:CASCADE"`
 	LogMakanan    []Log     `gorm:"foreignKey:AnakID"`
 	Nama          string    `gorm:"type:varchar(225); not null"`

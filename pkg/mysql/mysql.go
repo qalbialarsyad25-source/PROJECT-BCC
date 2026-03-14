@@ -34,7 +34,7 @@ func Migrate(db *gorm.DB) {
 		&entity.User{},
 		&entity.Anak{},
 		&entity.Makanan{},
-		&entity.LogMakanan{},
+		&entity.Log{},
 		&entity.Dokter{},
 		&entity.Konsultasi{},
 		&entity.Informasi{},
