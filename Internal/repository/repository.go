@@ -7,6 +7,7 @@ type Repository struct {
 	AnakRepository       IAnakRepository
 	MakananRepository    IMakananRepository
 	LogRepository        ILogRepository
+	LogMakananRepository ILogMakananRepository
 	DokterRepository     IDokterRepository
 	KonsultasiRepository IKonsulRepository
 	InformasiRepository  IInformasiRepository
@@ -18,6 +19,7 @@ func NewRepository(db *gorm.DB) *Repository {
 		AnakRepository:       NewAnakRepository(db),
 		MakananRepository:    NewMakananRepository(db),
 		LogRepository:        NewLogRepository(db),
+		LogMakananRepository: NewLogRepository(db),
 		DokterRepository:     NewDokterRepository(db),
 		KonsultasiRepository: NewKonsulRepository(db),
 		InformasiRepository:  NewInformasiRepository(db),
