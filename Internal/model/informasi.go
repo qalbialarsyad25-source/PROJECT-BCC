@@ -9,15 +9,20 @@ type BuatInformasi struct {
 	Judul     string `json:"judul"`
 }
 
+type EditInformasi struct {
+	Ringkasan string `json:"ringkasan"`
+	Judul     string `json:"judul"`
+}
+
 type InformasiResponse struct {
 	Ringkasan string `json:"ringkasan"`
 	Judul     string `json:"judul"`
 }
 
-func toInformasiResponse(informasi entity.Informasi) InformasiResponse{
+func toInformasiResponse(informasi entity.Informasi) InformasiResponse {
 	return InformasiResponse{
 		Ringkasan: informasi.Ringkasan,
-		Judul: informasi.Judul,
+		Judul:     informasi.Judul,
 	}
 }
 
@@ -28,4 +33,17 @@ func toInformasiResponses(informasi []entity.Informasi) []InformasiResponse {
 	}
 
 	return responses
+}
+
+func (e *EditInformasi) ToMap() map[string]any {
+	updates := map[string]any{}
+
+	if e.Ringkasan != "" {
+		updates["ringkasan"] = e.Ringkasan
+	}
+	if e.Judul != "" {
+		updates["judul"] = e.Judul
+	}
+
+	return updates
 }

@@ -19,7 +19,7 @@ func NewRepository(db *gorm.DB) *Repository {
 		AnakRepository:       NewAnakRepository(db),
 		MakananRepository:    NewMakananRepository(db),
 		LogRepository:        NewLogRepository(db),
-		LogMakananRepository: NewLogRepository(db),
+		LogMakananRepository: NewLogMakananRepository(db),
 		DokterRepository:     NewDokterRepository(db),
 		KonsultasiRepository: NewKonsulRepository(db),
 		InformasiRepository:  NewInformasiRepository(db),
