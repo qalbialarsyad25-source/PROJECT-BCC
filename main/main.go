@@ -3,7 +3,7 @@ package main
 import (
 	"bcc-geazy/config"
 	"bcc-geazy/internal/app"
-	controller "bcc-geazy/internal/auth"
+	"bcc-geazy/internal/usecase"
 	"net/http"
 )
 
@@ -12,8 +12,8 @@ func main() {
 	config.SambungDatabase()
 	app.Run()
 
-	http.HandleFunc("/auth/google", controller.GoogleLogin)
-	http.HandleFunc("/auth/google/callback", controller.GoogleCallback)
+	http.HandleFunc("/auth/google", usecase.GoogleLogin)
+	http.HandleFunc("/auth/google/callback", usecase.GoogleCallback)
 
 	err := http.ListenAndServe(":8080", nil)
 

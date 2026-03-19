@@ -22,13 +22,13 @@ type IAuthUsecase interface {
 }
 
 type AuthUsecase struct {
-	Jwt            jwt.JWT
+	Jwt            *jwt.JWT
 	Bcrypt         bcrypt.IBcrypt
 	Config         *oauth2.Config
 	UserRepository repository.IUserRepository
 }
 
-func NewAuthUsecase(jwt jwt.JWT, bcrypt bcrypt.IBcrypt, oAuth2 *oauth2.Config, userRepository repository.IUserRepository) *AuthUsecase {
+func NewAuthUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oAuth2 *oauth2.Config, userRepository repository.IUserRepository) *AuthUsecase {
 	return &AuthUsecase{
 		Jwt:            jwt,
 		Bcrypt:         bcrypt,

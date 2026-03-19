@@ -12,7 +12,7 @@ type OAuthGoogleConfig struct {
 	GoogleLoginConfig oauth2.Config
 }
 
-func GoogleOAuthConfig() oauth2.Config {
+func GoogleOAuthConfig() *oauth2.Config {
 	var AppConfig = OAuthGoogleConfig{
 		GoogleLoginConfig: oauth2.Config{
 			ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
@@ -23,7 +23,7 @@ func GoogleOAuthConfig() oauth2.Config {
 		},
 	}
 
-	return AppConfig.GoogleLoginConfig
+	return &AppConfig.GoogleLoginConfig
 }
 
 func GenerateRandomState() string {
