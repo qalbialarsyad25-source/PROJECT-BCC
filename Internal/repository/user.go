@@ -5,15 +5,13 @@ import (
 	"bcc-geazy/internal/model"
 	"context"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type IUserRepository interface {
 	CreateUser(ctx context.Context, user entity.User) error
 	GetUser(ctx context.Context, pagination model.Pagination) ([]entity.User, error)
-	DeleteUser(ctx context.Context, id uuid.UUID) error
-	EditUser(ctx context.Context, id uuid.UUID, edit model.EditUser) error
+	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 }
 
 type UserRepository struct {
@@ -44,4 +42,17 @@ func (p *UserRepository) GetUser(ctx context.Context, pagination model.Paginatio
 	}
 
 	return user, nil
+}
+
+func (u *UserRepository) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
+	var user entity.User
+	err := u.db.WithContext(ctx).
+		Where("email = ?", email).
+		First(&user).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

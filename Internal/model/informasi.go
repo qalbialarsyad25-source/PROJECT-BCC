@@ -14,4 +14,18 @@ type InformasiResponse struct {
 	Judul     string `json:"judul"`
 }
 
-func toInformasiResponse(informasi entity.Informasi)
+func toInformasiResponse(informasi entity.Informasi) InformasiResponse{
+	return InformasiResponse{
+		Ringkasan: informasi.Ringkasan,
+		Judul: informasi.Judul,
+	}
+}
+
+func toInformasiResponses(informasi []entity.Informasi) []InformasiResponse {
+	var responses []InformasiResponse
+	for _, Informasi := range informasi {
+		responses = append(responses, toInformasiResponse(Informasi))
+	}
+
+	return responses
+}

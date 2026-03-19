@@ -10,10 +10,10 @@ import (
 )
 
 type IAnakRepository interface {
-	CreateAnak(ctx context.Context, anak entity.Anak) error
+	CreateDataAnak(ctx context.Context, anak entity.Anak) error
 	GetUserAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error)
-	DeleteAnak(ctx context.Context, id uuid.UUID) error
-	EditAnak(ctx context.Context, id uuid.UUID, edit model.EditUser) error
+	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
+	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditUser) error
 }
 
 type AnakRepository struct {
@@ -24,7 +24,7 @@ func NewAnakRepository(db *gorm.DB) *AnakRepository {
 	return &AnakRepository{db}
 }
 
-func (p *AnakRepository) CreateAnak(ctx context.Context, anak entity.Anak) error {
+func (p *AnakRepository) CreateDataAnak(ctx context.Context, anak entity.Anak) error {
 	err := gorm.G[entity.Anak](p.db).Create(ctx, &anak)
 	if err != nil {
 		return err
@@ -44,4 +44,33 @@ func (p *AnakRepository) GetUserAnak(ctx context.Context, pagination model.Pagin
 	}
 
 	return anak, nil
+}
+
+func (p *AnakRepository) DeleteDataAnak(ctx context.Context, id uuid.UUID) error {
+	rows, err := gorm.G[entity.Anak](p.db).Where("id + ?", id).Delete(ctx)
+	if err != nil {
+		return err
+	}
+
+	if rows == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
+}
+
+func (p *AnakRepository) EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error {
+	result := p.db.WithContext(ctx).Model(&entity.Anak{}).
+		Where("id = ?", id).
+		Updates(edit.ToMap())
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
 }
