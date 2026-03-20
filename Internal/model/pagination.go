@@ -7,7 +7,7 @@ type Pagination struct {
 
 type PaginationResponse[T any] struct {
 	Data       []T        `json:"data"`
-	pagination Pagination `json:"pagination"`
+	Pagination Pagination `json:"pagination"`
 }
 
 func (p *Pagination) Check() {

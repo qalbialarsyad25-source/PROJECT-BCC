@@ -10,7 +10,6 @@ import (
 )
 
 type ILogMakananRepository interface {
-	CreateLogMakanan(ctx context.Context, logmakanan entity.LogMakanan) error
 	GetLogMakanan(ctx context.Context, pagination model.Pagination) ([]entity.LogMakanan, error)
 	DeleteLogMakanan(ctx context.Context, id uuid.UUID) error
 }
@@ -21,15 +20,6 @@ type LogMakananRepository struct {
 
 func NewLogMakananRepository(db *gorm.DB) *LogMakananRepository {
 	return &LogMakananRepository{db}
-}
-
-func (p *LogMakananRepository) CreateLogMakanan(ctx context.Context, logmakanan entity.LogMakanan) error {
-	err := gorm.G[entity.LogMakanan](p.db).Create(ctx, &logmakanan)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (p *LogMakananRepository) GetLogMakanan(ctx context.Context, pagination model.Pagination) ([]entity.LogMakanan, error) {

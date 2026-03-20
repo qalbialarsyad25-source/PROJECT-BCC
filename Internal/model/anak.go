@@ -32,6 +32,8 @@ type AnakResponse struct {
 	Gender        string    `json:"gender"`
 	LingkarKepala float64   `json:"lingkar_kepala"`
 	LingkarLengan float64   `json:"lingkar_lengan"`
+	BMI           float64   `json:"bmi"`
+	StatusGizi    string    `json:"status"`
 }
 
 func (p *EditDataAnak) ToMap() map[string]any {
@@ -64,7 +66,7 @@ func (p *EditDataAnak) ToMap() map[string]any {
 	return perbaruan
 }
 
-func toAnakResponse(Anak entity.Anak) AnakResponse {
+func ToAnakResponse(Anak entity.Anak) AnakResponse {
 	return AnakResponse{
 		Id:            Anak.Id,
 		Nama:          Anak.Nama,
@@ -73,13 +75,15 @@ func toAnakResponse(Anak entity.Anak) AnakResponse {
 		Gender:        Anak.Gender,
 		LingkarKepala: Anak.LingkarKepala,
 		LingkarLengan: Anak.LingkarLengan,
+		BMI:           Anak.BMI,
+		StatusGizi:    Anak.StatusGizi,
 	}
 }
 
-func toAnakResponses(Anak []entity.Anak) []AnakResponse {
+func ToAnakResponses(Anak []entity.Anak) []AnakResponse {
 	var responses []AnakResponse
 	for _, Anak := range Anak {
-		responses = append(responses, toAnakResponse(Anak))
+		responses = append(responses, ToAnakResponse(Anak))
 	}
 
 	return responses

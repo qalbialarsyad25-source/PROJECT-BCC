@@ -8,16 +8,16 @@ type LogMakananResponse struct {
 	Gram float64 `json:"gram"`
 }
 
-func toLogMakananResponse(logmakanan entity.LogMakanan) LogMakananResponse {
+func ToLogMakananResponse(logmakanan entity.LogMakanan) LogMakananResponse {
 	return LogMakananResponse{
 		Gram: logmakanan.Gram,
 	}
 }
 
-func toLogMakananResponses(logmakanan []entity.LogMakanan) []LogMakananResponse {
+func ToLogMakananResponses(logmakanan []entity.LogMakanan) []LogMakananResponse {
 	var responses []LogMakananResponse
 	for _, Logmakanan := range logmakanan {
-		responses = append(responses, toLogMakananResponse(Logmakanan))
+		responses = append(responses, ToLogMakananResponse(Logmakanan))
 	}
 
 	return responses

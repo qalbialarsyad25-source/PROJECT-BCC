@@ -67,7 +67,7 @@ func (u *AuthUsecase) Login(ctx context.Context, a model.UserLogin) (string, err
 		return "", err
 	}
 
-	token, err := u.Jwt.GenerateToken(user.Id.String(), user.Role)
+	token, err := u.Jwt.GenerateJWT(user.Id.String(), user.Role)
 	if err != nil {
 		return "", err
 	}
@@ -114,7 +114,7 @@ func (u *AuthUsecase) GoogleCallback(ctx context.Context, code string) (string, 
 		}
 	}
 
-	jwtToken, err := u.Jwt.GenerateToken(user.Id.String(), user.Role)
+	jwtToken, err := u.Jwt.GenerateJWT(user.Id.String(), user.Role)
 	if err != nil {
 		return "", err
 	}

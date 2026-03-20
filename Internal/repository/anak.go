@@ -11,9 +11,9 @@ import (
 
 type IAnakRepository interface {
 	CreateDataAnak(ctx context.Context, anak entity.Anak) error
-	GetUserAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error)
+	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
-	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditUser) error
+	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
 }
 
 type AnakRepository struct {
@@ -33,7 +33,7 @@ func (p *AnakRepository) CreateDataAnak(ctx context.Context, anak entity.Anak) e
 	return nil
 }
 
-func (p *AnakRepository) GetUserAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error) {
+func (p *AnakRepository) GetDataAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error) {
 	anak, err := gorm.G[entity.Anak](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).

@@ -21,5 +21,5 @@ type UserLogin struct {
 var (
 	UserRoleUser   = "user"
 	UserRoleAdmin  = "admin"
-	userRoleDokter = "dokter"
+	UserRoleDokter = "dokter"
 )

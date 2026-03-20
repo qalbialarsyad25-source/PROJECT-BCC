@@ -1,7 +1,10 @@
 package model
 
 import (
+	"bcc-geazy/internal/entity"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type BuatPesan struct {
@@ -9,9 +12,32 @@ type BuatPesan struct {
 	WaktuPesan time.Time `json:"waktu_pesan"`
 }
 
+type KonsultasiResponse struct {
+	Id         uuid.UUID `json:"id"`
+	Pesan      string    `json:"pesan"`
+	WaktuPesan time.Time `json:"waktu_pesan"`
+}
+
 type EditPesan struct {
 	Pesan      string    `json:"pesan"`
 	WaktuPesan time.Time `json:"waktu_pesan"`
+}
+
+func ToKonsultasiResponse(Konsultasi entity.Konsultasi) KonsultasiResponse {
+	return KonsultasiResponse{
+		Id:         Konsultasi.Id,
+		Pesan:      Konsultasi.Pesan,
+		WaktuPesan: Konsultasi.WaktuPesan,
+	}
+}
+
+func ToKonsultasiResponses(Konsultasi []entity.Konsultasi) []KonsultasiResponse {
+	var responses []KonsultasiResponse
+	for _, Konsultasi := range Konsultasi {
+		responses = append(responses, ToKonsultasiResponse(Konsultasi))
+	}
+
+	return responses
 }
 
 func (e *EditPesan) ToMap() map[string]any {

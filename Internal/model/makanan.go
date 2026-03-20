@@ -12,7 +12,7 @@ type MakananResponse struct {
 	Karbo   float64 `json:"karbo"`
 }
 
-func toMakananResponse(makanan entity.Makanan) MakananResponse {
+func ToMakananResponse(makanan entity.Makanan) MakananResponse {
 	return MakananResponse{
 		Nama:    makanan.Nama,
 		Energi:  makanan.Energi,
@@ -22,10 +22,10 @@ func toMakananResponse(makanan entity.Makanan) MakananResponse {
 	}
 }
 
-func toMakananResponses(makanan []entity.Makanan) []MakananResponse {
+func ToMakananResponses(makanan []entity.Makanan) []MakananResponse {
 	var responses []MakananResponse
 	for _, Makanan := range makanan {
-		responses = append(responses, toMakananResponse(Makanan))
+		responses = append(responses, ToMakananResponse(Makanan))
 	}
 
 	return responses

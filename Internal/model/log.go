@@ -5,20 +5,20 @@ import (
 	"time"
 )
 
-type LogReponse struct {
+type LogResponse struct {
 	WaktuMakan time.Time `json:"waktu_makan"`
 }
 
-func toLogResponse(log entity.Log) LogReponse {
-	return LogReponse{
+func ToLogResponse(log entity.Log) LogResponse {
+	return LogResponse{
 		WaktuMakan: log.WaktuMakan,
 	}
 }
 
-func toLogResponses(log []entity.Log) []LogReponse {
-	var responses []LogReponse
+func ToLogResponses(log []entity.Log) []LogResponse {
+	var responses []LogResponse
 	for _, Log := range log {
-		responses = append(responses, toLogResponse(Log))
+		responses = append(responses, ToLogResponse(Log))
 	}
 
 	return responses
