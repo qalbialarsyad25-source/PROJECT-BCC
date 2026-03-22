@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -14,6 +16,7 @@ type Anak struct {
 	Gender        string    `gorm:"type:varchar(10); not null"`
 	LingkarLengan float64   `gorm:"type:decimal(10,2); not null"`
 	LingkarKepala float64   `gorm:"type:decimal(10,2); not null"`
-	BMI           float64   `gorm:"type:decimal(10,2); not null"`
-	StatusGizi    string    `gorm:"type:varchar(10); not null"`
+	DibuatPada    time.Time `gorm:"type:timestamp; not null; autoCreateTime"`
+	BMI           float64
+	StatusGizi    string
 }

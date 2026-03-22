@@ -7,12 +7,20 @@ import (
 func NewRouter(app *gin.Engine, v1 *V1) {
 	api := app.Group("/api/v1")
 	{
+
+		auth := api.Group("/auth")
+		{
+			auth.GET("/google/login", v1.LoginGoogle)
+			auth.GET("/google/callback", v1.CallbackGoogle)
+		}
 		anak := api.Group("/anak")
 		{
-			anak.GET("", v1.GetDataAnak)
-			anak.POST("", v1.CreateDataAnak)
+			anak.GET("", v1.IMiddleware.Authentication, v1.GetDataAnak)
+			anak.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user", "dokter"), v1.CreateDataAnak)
 			anak.DELETE("/:id", v1.DeleteDataAnak)
 			anak.PATCH(":id", v1.EditDataAnak)
 		}
+
 	}
+
 }

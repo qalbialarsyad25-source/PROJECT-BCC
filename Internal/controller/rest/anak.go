@@ -51,6 +51,8 @@ func (p *V1) GetDataAnak(c *gin.Context) {
 func (p *V1) CreateDataAnak(c *gin.Context) {
 	var create model.TambahDataAnak
 
+	userID := c.MustGet("userId").(uuid.UUID)
+
 	err := c.ShouldBindBodyWithJSON(&create)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -59,7 +61,7 @@ func (p *V1) CreateDataAnak(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	anak, err := p.usecase.AnakUsecase.CreateDataAnak(ctx, create)
+	anak, err := p.usecase.AnakUsecase.CreateDataAnak(ctx, create, userID)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return

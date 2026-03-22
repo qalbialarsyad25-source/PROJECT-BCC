@@ -10,7 +10,7 @@ import (
 )
 
 type IAnakUsecase interface {
-	CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak) (*model.AnakResponse, error)
+	CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak, userID uuid.UUID) (*model.AnakResponse, error)
 	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]model.AnakResponse, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
 	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
@@ -24,12 +24,13 @@ func NewAnakUsecase(anakRepository repository.IAnakRepository) *AnakUsecase {
 	return &AnakUsecase{anakRepository}
 }
 
-func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak) (*model.AnakResponse, error) {
+func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak, userID uuid.UUID) (*model.AnakResponse, error) {
 
 	bmi, status := HitungBMI(buatAnak.BeratBadan, buatAnak.Tinggi)
 
 	anak := entity.Anak{
 		Id:            uuid.New(),
+		UserID:        userID,
 		Nama:          buatAnak.Nama,
 		Tinggi:        buatAnak.Tinggi,
 		BeratBadan:    buatAnak.BeratBadan,

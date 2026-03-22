@@ -37,7 +37,7 @@ func (p *AnakRepository) GetDataAnak(ctx context.Context, pagination model.Pagin
 	anak, err := gorm.G[entity.Anak](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat_pada ").
+		Order("dibuat_pada DESC").
 		Find(ctx)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (p *AnakRepository) GetDataAnak(ctx context.Context, pagination model.Pagin
 }
 
 func (p *AnakRepository) DeleteDataAnak(ctx context.Context, id uuid.UUID) error {
-	rows, err := gorm.G[entity.Anak](p.db).Where("id + ?", id).Delete(ctx)
+	rows, err := gorm.G[entity.Anak](p.db).Where("id = ?", id).Delete(ctx)
 	if err != nil {
 		return err
 	}

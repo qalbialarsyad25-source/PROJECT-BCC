@@ -1,21 +1,17 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
 type User struct {
-	Id             uuid.UUID    `gorm:"type:char(36);primaryKey"`
-	GoogleID       string       `gorm:"uniqueIndex;type:varchar(225); not null"`
-	Nama           string       `gorm:"type:varchar(225); not null"`
-	Email          string       `gorm:"uniqueIndex;type:varchar(225); not null"`
-	Anak           []Anak       `gorm:"foreignKey:UserID"`
-	Password       string       `gorm:"type:varchar(255)"`
-	Role           string       `gorm:"type:varchar(20);not null"`
-	DibuatPada     time.Time    `gorm:"autoCreateTime"`
-	DiperbaruiPada time.Time    `gorm:"autoCreateTime"`
-	Konsultasi     []Konsultasi `gorm:"foreignKey:UserID"`
-	Informasi      []Informasi  `gorm:"foreignKey:UserID"`
+	Id         uuid.UUID    `gorm:"type:char(36);primaryKey"`
+	GoogleID   string       `gorm:"uniqueIndex;type:varchar(225); not null"`
+	Nama       string       `gorm:"type:varchar(225); not null"`
+	Email      string       `gorm:"uniqueIndex;type:varchar(225); not null"`
+	Anak       []Anak       `gorm:"foreignKey:UserID"`
+	Password   string       `gorm:"type:varchar(255)"`
+	Role       string       `gorm:"type:varchar(20);not null"`
+	Konsultasi []Konsultasi `gorm:"foreignKey:UserID"`
+	Informasi  []Informasi  `gorm:"foreignKey:UserID"`
 }
