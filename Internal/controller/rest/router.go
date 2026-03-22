@@ -13,6 +13,7 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 			auth.GET("/google/login", v1.LoginGoogle)
 			auth.GET("/google/callback", v1.CallbackGoogle)
 		}
+
 		anak := api.Group("/anak")
 		{
 			anak.GET("", v1.IMiddleware.Authentication, v1.GetDataAnak)
@@ -21,6 +22,10 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 			anak.PATCH(":id", v1.EditDataAnak)
 		}
 
+		makanan := api.Group("/makanan")
+		{
+			makanan.GET("", v1.GetMakanan)
+		}
 	}
 
 }

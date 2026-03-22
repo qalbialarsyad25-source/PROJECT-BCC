@@ -5,7 +5,7 @@ import (
 )
 
 type Makanan struct {
-	ID         uuid.UUID    `gorm:"type:char(36);primaryKey"`
+	Id         uuid.UUID    `gorm:"type:char(36);primaryKey"`
 	Nama       string       `gorm:"type:varchar(100); not null"`
 	LogMakanan []LogMakanan `gorm:"foreignKey:MakananID"`
 	AnakID     uuid.UUID    `gorm:"type:char(36);not null; constraint;OnDelete;CASCADE"`

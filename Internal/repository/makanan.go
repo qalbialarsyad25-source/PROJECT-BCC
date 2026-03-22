@@ -24,7 +24,6 @@ func (p *MakananRepository) GetMakanan(ctx context.Context, pagination model.Pag
 	makanan, err := gorm.G[entity.Makanan](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat pada ").
 		Find(ctx)
 	if err != nil {
 		return nil, err

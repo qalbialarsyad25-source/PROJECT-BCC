@@ -3,6 +3,7 @@ package app
 import (
 	"bcc-geazy/internal/controller/rest"
 	"bcc-geazy/internal/repository"
+	"bcc-geazy/internal/seeder"
 	"bcc-geazy/internal/usecase"
 	"bcc-geazy/pkg/bcrypt"
 	httpserver "bcc-geazy/pkg/gin"
@@ -25,6 +26,8 @@ func Run() {
 	}
 
 	db := sql.StartMySQL()
+
+	seeder.InfoMakanan(db)
 	app := httpserver.Start()
 
 	jwtInit := jwt.NewJWT()
