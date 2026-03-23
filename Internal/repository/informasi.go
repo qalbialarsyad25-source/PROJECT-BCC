@@ -38,7 +38,7 @@ func (p *InformasiRepository) GetInformasi(ctx context.Context, pagination model
 	informasi, err := gorm.G[entity.Informasi](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat pada ").
+		Order("dibuat_pada DESC").
 		Find(ctx)
 	if err != nil {
 		return nil, err

@@ -5,12 +5,13 @@ import (
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 type IInformasiUsecase interface {
-	CreateInformasi(ctx context.Context, buatInformasi model.BuatInformasi) (*model.InformasiResponse, error)
+	CreateInformasi(ctx context.Context, userID uuid.UUID, buatInformasi model.BuatInformasi) (*model.InformasiResponse, error)
 	GetInformasi(ctx context.Context, pagination model.Pagination) ([]model.InformasiResponse, error)
 	DeleteInformasi(ctx context.Context, id uuid.UUID) error
 	EditInformasi(ctx context.Context, id uuid.UUID, edit model.EditInformasi) error
@@ -24,11 +25,13 @@ func NewInformasiUsecase(informasiRepository repository.IInformasiRepository) *I
 	return &InformasiUsecase{informasiRepository}
 }
 
-func (p *InformasiUsecase) CreateInformasi(ctx context.Context, buatInformasi model.BuatInformasi) (*model.InformasiResponse, error) {
+func (p *InformasiUsecase) CreateInformasi(ctx context.Context, userID uuid.UUID, buatInformasi model.BuatInformasi) (*model.InformasiResponse, error) {
 	informasi := entity.Informasi{
-		Id:        uuid.New(),
-		Ringkasan: buatInformasi.Ringkasan,
-		Judul:     buatInformasi.Judul,
+		Id:         uuid.New(),
+		UserID:     userID,
+		Ringkasan:  buatInformasi.Ringkasan,
+		Judul:      buatInformasi.Judul,
+		DibuatPada: time.Now(),
 	}
 
 	err := p.InformasiRepository.CreateInformasi(ctx, informasi)

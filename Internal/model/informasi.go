@@ -2,6 +2,9 @@ package model
 
 import (
 	"bcc-geazy/internal/entity"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type BuatInformasi struct {
@@ -15,14 +18,18 @@ type EditInformasi struct {
 }
 
 type InformasiResponse struct {
-	Ringkasan string `json:"ringkasan"`
-	Judul     string `json:"judul"`
+	Id         uuid.UUID `json:"id"`
+	Judul      string    `json:"judul"`
+	Ringkasan  string    `json:"ringkasan"`
+	DibuatPada time.Time `json:"dibuat_pada"`
 }
 
 func ToInformasiResponse(informasi entity.Informasi) InformasiResponse {
 	return InformasiResponse{
-		Ringkasan: informasi.Ringkasan,
-		Judul:     informasi.Judul,
+		Id:         informasi.Id,
+		Ringkasan:  informasi.Ringkasan,
+		Judul:      informasi.Judul,
+		DibuatPada: informasi.DibuatPada,
 	}
 }
 

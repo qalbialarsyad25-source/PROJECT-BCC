@@ -51,6 +51,8 @@ func (p *V1) GetInformasi(c *gin.Context) {
 func (p *V1) CreateInformasi(c *gin.Context) {
 	var create model.BuatInformasi
 
+	userID := c.MustGet("userId").(uuid.UUID)
+
 	err := c.ShouldBindBodyWithJSON(&create)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -59,7 +61,7 @@ func (p *V1) CreateInformasi(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	informasi, err := p.usecase.InformasiUsecase.CreateInformasi(ctx, create)
+	informasi, err := p.usecase.InformasiUsecase.CreateInformasi(ctx, userID, create)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
