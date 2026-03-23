@@ -62,14 +62,20 @@ func (p *LogRepository) GetLog(ctx context.Context, AnakID uuid.UUID, pagination
 }
 
 func (p *LogRepository) DeleteLog(ctx context.Context, id uuid.UUID) error {
-	rows, err := gorm.G[entity.Log](p.db).Where("id = ?", id).Delete(ctx)
-	if err != nil {
-		return err
-	}
+	return p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("log_id = ?", id).Delete(&entity.LogMakanan{}).Error; err != nil {
+			return err
+		}
 
-	if rows == 0 {
-		return gorm.ErrRecordNotFound
-	}
+		rows, err := gorm.G[entity.Log](tx).Where("id = ?", id).Delete(ctx)
+		if err != nil {
+			return err
+		}
 
-	return nil
+		if rows == 0 {
+			return gorm.ErrRecordNotFound
+		}
+
+		return nil
+	})
 }

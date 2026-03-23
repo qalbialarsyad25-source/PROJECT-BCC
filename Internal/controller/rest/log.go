@@ -82,7 +82,7 @@ func (p *V1) CreateLog(c *gin.Context) {
 }
 
 func (p *V1) DeleteLog(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := uuid.Parse(c.Param("logId"))
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return

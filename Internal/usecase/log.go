@@ -29,23 +29,13 @@ func (p *LogUsecase) GetLog(ctx context.Context, AnakID uuid.UUID, pagination mo
 		return nil, err
 	}
 
-	var responses []model.LogResponse
-	for _, log := range log {
-		makanan := model.ToLogMakananResponses(log.LogMakanan)
+	responses := model.ToLogResponses(log)
 
-		var totalProtein, totalLemak, totalKarbo float64
-		for _, m := range makanan {
-			totalProtein += m.Protein
-			totalLemak += m.Lemak
-			totalKarbo += m.Karbo
-		}
-		TotalKalori := (totalProtein * 4) + (totalKarbo * 4) + (totalLemak * 9)
-
-		responses = append(responses, model.LogResponse{
-			WaktuMakan:  log.WaktuMakan,
-			Makanan:     makanan,
-			TotalKalori: TotalKalori,
-		})
+	for i, l := range log {
+		makanan := model.ToLogMakananResponses(l.LogMakanan)
+		protein, lemak, karbo := HitungTotalNutrisi(makanan)
+		totalKalori := hitungKalori(protein, lemak, karbo)
+		responses[i].TotalKalori = totalKalori
 	}
 
 	return responses, nil

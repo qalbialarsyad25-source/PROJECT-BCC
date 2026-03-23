@@ -20,7 +20,7 @@ func ToLogMakananResponse(logmakanan entity.LogMakanan) LogMakananResponse {
 	m := logmakanan.Makanan
 
 	return LogMakananResponse{
-		Id:   m.Id,
+		Id:   logmakanan.Id,
 		Nama: m.Nama,
 		Gram: logmakanan.Gram,
 
