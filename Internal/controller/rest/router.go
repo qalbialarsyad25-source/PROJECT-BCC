@@ -17,7 +17,7 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 		anak := api.Group("/anak")
 		{
 			anak.GET("", v1.IMiddleware.Authentication, v1.GetDataAnak)
-			anak.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user", "dokter"), v1.CreateDataAnak)
+			anak.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user"), v1.CreateDataAnak)
 			anak.DELETE("/:id", v1.DeleteDataAnak)
 			anak.PATCH("/:id", v1.EditDataAnak)
 
@@ -33,7 +33,7 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 		informasi := api.Group("/informasi")
 		{
 			informasi.GET("", v1.IMiddleware.Authentication, v1.GetInformasi)
-			informasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user", "dokter"), v1.CreateInformasi)
+			informasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateInformasi)
 			informasi.DELETE("/:id", v1.DeleteInformasi)
 			informasi.PATCH("/:id", v1.EditInformasi)
 		}
