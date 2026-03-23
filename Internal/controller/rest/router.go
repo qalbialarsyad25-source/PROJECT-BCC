@@ -19,7 +19,15 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 			anak.GET("", v1.IMiddleware.Authentication, v1.GetDataAnak)
 			anak.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user", "dokter"), v1.CreateDataAnak)
 			anak.DELETE("/:id", v1.DeleteDataAnak)
-			anak.PATCH(":id", v1.EditDataAnak)
+			anak.PATCH("/:id", v1.EditDataAnak)
+
+			log := anak.Group("/:id/log")
+			{
+				log.GET("", v1.IMiddleware.Authentication, v1.GetLog)
+				log.POST("", v1.IMiddleware.Authentication, v1.CreateLog)
+				log.DELETE("/:logId", v1.DeleteLog)
+			}
+
 		}
 
 		makanan := api.Group("/makanan")

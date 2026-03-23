@@ -2,18 +2,22 @@ package model
 
 import (
 	"bcc-geazy/internal/entity"
+
+	"github.com/google/uuid"
 )
 
 type MakananResponse struct {
-	Nama    string  `json:"nama"`
-	Energi  float64 `json:"energi"`
-	Protein float64 `json:"Protein"`
-	Lemak   float64 `json:"lemak"`
-	Karbo   float64 `json:"karbo"`
+	Id      uuid.UUID `json:"id"`
+	Nama    string    `json:"nama"`
+	Energi  float64   `json:"energi"`
+	Protein float64   `json:"Protein"`
+	Lemak   float64   `json:"lemak"`
+	Karbo   float64   `json:"karbo"`
 }
 
 func ToMakananResponse(makanan entity.Makanan) MakananResponse {
 	return MakananResponse{
+		Id:      makanan.Id,
 		Nama:    makanan.Nama,
 		Energi:  makanan.Energi,
 		Protein: makanan.Protein,

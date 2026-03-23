@@ -47,7 +47,7 @@ func (p *KonsultasiRepository) GetKonsultasi(ctx context.Context, pagination mod
 }
 
 func (p *KonsultasiRepository) DeleteKonsultasi(ctx context.Context, id uuid.UUID) error {
-	rows, err := gorm.G[entity.Konsultasi](p.db).Where("id + ?", id).Delete(ctx)
+	rows, err := gorm.G[entity.Konsultasi](p.db).Where("id = ?", id).Delete(ctx)
 	if err != nil {
 		return err
 	}

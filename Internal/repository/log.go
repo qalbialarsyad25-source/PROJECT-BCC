@@ -5,11 +5,15 @@ import (
 	"bcc-geazy/internal/model"
 	"context"
 
+	"github.com/google/uuid"
+
 	"gorm.io/gorm"
 )
 
 type ILogRepository interface {
-	GetLog(ctx context.Context, pagination model.Pagination) ([]entity.Log, error)
+	CreateLog(ctx context.Context, log entity.Log, logmakanan []entity.LogMakanan) error
+	GetLog(ctx context.Context, AnakID uuid.UUID, pagination model.Pagination) ([]entity.Log, error)
+	DeleteLog(ctx context.Context, id uuid.UUID) error
 }
 
 type LogRepository struct {
@@ -20,15 +24,52 @@ func NewLogRepository(db *gorm.DB) *LogRepository {
 	return &LogRepository{db}
 }
 
-func (p *LogRepository) GetLog(ctx context.Context, pagination model.Pagination) ([]entity.Log, error) {
-	log, err := gorm.G[entity.Log](p.db).
+func (p *LogRepository) CreateLog(ctx context.Context, log entity.Log, logmakanan []entity.LogMakanan) error {
+	return p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := gorm.G[entity.Log](tx).Create(ctx, &log); err != nil {
+			return err
+		}
+
+		for i := range logmakanan {
+			logmakanan[i].LogId = log.Id
+		}
+
+		for _, lm := range logmakanan {
+			if err := gorm.G[entity.LogMakanan](tx).Create(ctx, &lm); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+}
+
+func (p *LogRepository) GetLog(ctx context.Context, AnakID uuid.UUID, pagination model.Pagination) ([]entity.Log, error) {
+	logs, err := gorm.G[entity.Log](p.db).
+		Preload("LogMakanan.Makanan", func(db gorm.PreloadBuilder) error {
+			return nil
+		}).
+		Where("anak_id = ?", AnakID).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat pada ").
+		Order("waktu_makan DESC").
 		Find(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return log, nil
+	return logs, nil
+}
+
+func (p *LogRepository) DeleteLog(ctx context.Context, id uuid.UUID) error {
+	rows, err := gorm.G[entity.Log](p.db).Where("id = ?", id).Delete(ctx)
+	if err != nil {
+		return err
+	}
+
+	if rows == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
 }

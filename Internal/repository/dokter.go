@@ -47,7 +47,7 @@ func (p *DokterRepository) GetUserDokter(ctx context.Context, pagination model.P
 }
 
 func (p *DokterRepository) DeleteDataDokter(ctx context.Context, id uuid.UUID) error {
-	rows, err := gorm.G[entity.Dokter](p.db).Where("id + ?", id).Delete(ctx)
+	rows, err := gorm.G[entity.Dokter](p.db).Where("id = ?", id).Delete(ctx)
 	if err != nil {
 		return err
 	}

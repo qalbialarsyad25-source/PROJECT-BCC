@@ -36,7 +36,7 @@ func (p *LogMakananRepository) GetLogMakanan(ctx context.Context, pagination mod
 }
 
 func (p *LogMakananRepository) DeleteLogMakanan(ctx context.Context, id uuid.UUID) error {
-	rows, err := gorm.G[entity.LogMakanan](p.db).Where("id + ?", id).Delete(ctx)
+	rows, err := gorm.G[entity.LogMakanan](p.db).Where("id = ?", id).Delete(ctx)
 	if err != nil {
 		return err
 	}

@@ -48,7 +48,7 @@ func (p *InformasiRepository) GetInformasi(ctx context.Context, pagination model
 }
 
 func (p *InformasiRepository) DeleteInformasi(ctx context.Context, id uuid.UUID) error {
-	rows, err := gorm.G[entity.Informasi](p.db).Where("id + ?", id).Delete(ctx)
+	rows, err := gorm.G[entity.Informasi](p.db).Where("id = ?", id).Delete(ctx)
 	if err != nil {
 		return err
 	}
