@@ -42,6 +42,7 @@ func (u *AuthUsecase) Register(ctx context.Context, a model.UserRegister) error 
 	if err != nil {
 		return err
 	}
+
 	user := entity.User{
 		Id:       uuid.New(),
 		Email:    a.Email,

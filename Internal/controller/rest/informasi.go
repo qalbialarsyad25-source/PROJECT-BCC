@@ -53,7 +53,7 @@ func (p *V1) CreateInformasi(c *gin.Context) {
 
 	userID := c.MustGet("userId").(uuid.UUID)
 
-	err := c.ShouldBindBodyWithJSON(&create)
+	err := c.ShouldBindJSON(&create)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return

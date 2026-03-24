@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	Id         uuid.UUID    `gorm:"type:char(36);primaryKey"`
-	GoogleID   string       `gorm:"uniqueIndex;type:varchar(225); not null"`
+	GoogleID   *string      `gorm:"uniqueIndex;type:varchar(225)"`
 	Nama       string       `gorm:"type:varchar(225); not null"`
 	Email      string       `gorm:"uniqueIndex;type:varchar(225); not null"`
 	Anak       []Anak       `gorm:"foreignKey:UserID"`

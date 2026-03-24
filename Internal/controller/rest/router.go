@@ -10,6 +10,8 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 
 		auth := api.Group("/auth")
 		{
+			auth.POST("/register", v1.Register)
+			auth.POST("/login", v1.Login)
 			auth.GET("/google/login", v1.LoginGoogle)
 			auth.GET("/google/callback", v1.CallbackGoogle)
 		}
@@ -40,7 +42,10 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 
 		makanan := api.Group("/makanan")
 		{
-			makanan.GET("", v1.GetMakanan)
+			makanan.GET("", v1.IMiddleware.Authentication, v1.GetMakanan)
+			makanan.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateMakanan)
+			makanan.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditMakanan)
+			makanan.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteMakanan)
 		}
 	}
 
