@@ -27,18 +27,26 @@ func NewAnakUsecase(anakRepository repository.IAnakRepository) *AnakUsecase {
 func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak, userID uuid.UUID) (*model.AnakResponse, error) {
 
 	bmi, status := HitungBMI(buatAnak.BeratBadan, buatAnak.Tinggi)
+	umur := HitungUmur(buatAnak.TahunLahir)
 
 	anak := entity.Anak{
-		Id:            uuid.New(),
-		UserID:        userID,
-		Nama:          buatAnak.Nama,
-		Tinggi:        buatAnak.Tinggi,
-		BeratBadan:    buatAnak.BeratBadan,
-		Gender:        buatAnak.Gender,
-		LingkarLengan: buatAnak.LingkarLengan,
-		LingkarKepala: buatAnak.LingkarKepala,
-		BMI:           bmi,
-		StatusGizi:    status,
+		Id:              uuid.New(),
+		UserID:          userID,
+		Nama:            buatAnak.Nama,
+		TanggalLahir:    buatAnak.TanggalLahir,
+		BulanLahir:      buatAnak.BulanLahir,
+		TahunLahir:      buatAnak.TahunLahir,
+		Umur:            umur,
+		Tinggi:          buatAnak.Tinggi,
+		BeratBadan:      buatAnak.BeratBadan,
+		Gender:          buatAnak.Gender,
+		LingkarLengan:   buatAnak.LingkarLengan,
+		LingkarKepala:   buatAnak.LingkarKepala,
+		GolonganDarah:   buatAnak.GolonganDarah,
+		Alergi:          buatAnak.Alergi,
+		RiwayatPenyakit: buatAnak.RiwayatPenyakit,
+		BMI:             bmi,
+		StatusGizi:      status,
 	}
 
 	err := p.AnakRepository.CreateDataAnak(ctx, anak)
