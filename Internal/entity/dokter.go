@@ -6,6 +6,8 @@ import (
 
 type Dokter struct {
 	Id           uuid.UUID    `gorm:"type:char(36);primaryKey"`
+	UserId       uuid.UUID    `gorm:"type:char(36);uniqueIndex;not null"`
 	Nama         string       `gorm:"type:varchar(225); not null"`
+	Spesialis    string       `gorm:"type:varchar(225); not null"`
 	KonsultasiID []Konsultasi `gorm:"foreignKey:DokterID"`
 }

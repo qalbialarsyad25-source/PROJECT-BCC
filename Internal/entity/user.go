@@ -14,4 +14,5 @@ type User struct {
 	Role       string       `gorm:"type:varchar(20);not null"`
 	Konsultasi []Konsultasi `gorm:"foreignKey:UserID"`
 	Informasi  []Informasi  `gorm:"foreignKey:UserID"`
+	Dokter     Dokter       `gorm:"foreignKey:UserID"`
 }

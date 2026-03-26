@@ -37,7 +37,6 @@ func (p *DokterRepository) GetUserDokter(ctx context.Context, pagination model.P
 	dokter, err := gorm.G[entity.Dokter](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat_pada ").
 		Find(ctx)
 	if err != nil {
 		return nil, err

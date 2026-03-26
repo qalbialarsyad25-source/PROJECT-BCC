@@ -4,6 +4,7 @@ import (
 	"bcc-geazy/internal/entity"
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
+	"bcc-geazy/pkg/bcrypt"
 	"context"
 
 	"github.com/google/uuid"
@@ -18,19 +19,44 @@ type IDokterUsecase interface {
 
 type DokterUsecase struct {
 	DokterRepository repository.IDokterRepository
+	UserRepository   repository.IUserRepository
+	Bcrypt           bcrypt.IBcrypt
 }
 
-func NewDokterUsecase(dokterRepository repository.IDokterRepository) *DokterUsecase {
-	return &DokterUsecase{dokterRepository}
+func NewDokterUsecase(dokterRepository repository.IDokterRepository, userRepository repository.IUserRepository, bcrypt bcrypt.IBcrypt) *DokterUsecase {
+	return &DokterUsecase{
+		DokterRepository: dokterRepository,
+		UserRepository:   userRepository,
+		Bcrypt:           bcrypt,
+	}
 }
 
 func (p *DokterUsecase) CreateDataDokter(ctx context.Context, buatDokter model.BuatUserDokter) (*model.DokterResponse, error) {
-	dokter := entity.Dokter{
-		Id:   uuid.New(),
-		Nama: buatDokter.Nama,
+	hashed, err := p.Bcrypt.GenerateHash(buatDokter.Password)
+	if err != nil {
+		return nil, err
 	}
 
-	err := p.DokterRepository.CreateDataDokter(ctx, dokter)
+	user := entity.User{
+		Id:       uuid.New(),
+		Email:    buatDokter.Email,
+		Password: hashed,
+		Role:     "dokter",
+	}
+
+	err = p.UserRepository.CreateUser(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+
+	dokter := entity.Dokter{
+		Id:        uuid.New(),
+		UserId:    user.Id,
+		Nama:      buatDokter.Nama,
+		Spesialis: buatDokter.Spesialis,
+	}
+
+	err = p.DokterRepository.CreateDataDokter(ctx, dokter)
 	if err != nil {
 		return nil, err
 	}

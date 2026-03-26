@@ -8,11 +8,10 @@ import (
 )
 
 type BuatPesan struct {
-	UserID     uuid.UUID `json:"user_id"`
-	DokterID   uuid.UUID `json:"dokter_id"`
-	SenderID   uuid.UUID `json:"sender_id"`
-	Pesan      string    `json:"pesan"`
-	WaktuPesan time.Time `json:"waktu_pesan"`
+	UserID   uuid.UUID `json:"user_id"`
+	DokterID uuid.UUID `json:"dokter_id"`
+	SenderID uuid.UUID `json:"sender_id"`
+	Pesan    string    `json:"pesan"`
 }
 
 type KonsultasiResponse struct {
@@ -22,8 +21,7 @@ type KonsultasiResponse struct {
 }
 
 type EditPesan struct {
-	Pesan      string    `json:"pesan"`
-	WaktuPesan time.Time `json:"waktu_pesan"`
+	Pesan string `json:"pesan"`
 }
 
 func ToKonsultasiResponse(Konsultasi entity.Konsultasi) KonsultasiResponse {
@@ -48,9 +46,6 @@ func (e *EditPesan) ToMap() map[string]any {
 
 	if e.Pesan != "" {
 		updates["pesan"] = e.Pesan
-	}
-	if !e.WaktuPesan.IsZero() {
-		updates["waktu_pesan"] = e.WaktuPesan
 	}
 
 	return updates

@@ -61,6 +61,8 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 		{
 			dokter.GET("", v1.IMiddleware.Authentication, v1.GetDokter)
 			dokter.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateDokter)
+			dokter.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteDokter)
+			dokter.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditDokter)
 		}
 	}
 

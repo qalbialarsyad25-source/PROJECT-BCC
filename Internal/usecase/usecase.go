@@ -26,7 +26,7 @@ func NewUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oauth *oauth2.Config, repos
 		MakananUsecase:    NewMakananUsecase(repository.MakananRepository),
 		LogUsecase:        NewLogUsecase(repository.LogRepository),
 		LogMakananUsecase: NewLogMakananUsecase(repository.LogMakananRepository),
-		DokterUsecase:     NewDokterUsecase(repository.DokterRepository),
+		DokterUsecase:     NewDokterUsecase(repository.DokterRepository, repository.UserRepository, bcrypt),
 		KonsultasiUsecase: NewKonsultasiUsecase(repository.KonsultasiRepository, ws),
 		InformasiUsecase:  NewInformasiUsecase(repository.InformasiRepository),
 		AuthUsecase:       NewAuthUsecase(jwt, bcrypt, oauth, repository.UserRepository),
