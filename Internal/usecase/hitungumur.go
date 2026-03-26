@@ -1,16 +1,14 @@
 package usecase
 
 import (
+	"fmt"
 	"time"
 )
 
-func HitungUmur(tahun float64) float64 {
-	tahunlahir := tahun
-	var tahunlahirint int = int(tahunlahir)
+func HitungUmur(tahun int) string {
 	tahunini := time.Now().Year()
 
-	umur := tahunini - tahunlahirint
-	var umurfloat float64 = float64(umur)
+	umur := tahunini - tahun
 
-	return umurfloat
+	return fmt.Sprintf("%d Tahun", umur)
 }

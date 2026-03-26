@@ -8,13 +8,14 @@ import (
 
 type TambahDataAnak struct {
 	Nama            string  `json:"nama"`
-	TanggalLahir    float64 `json:"tanggal_lahir"`
-	BulanLahir      float64 `json:"bulan_lahir"`
-	TahunLahir      float64 `json"tahun_lahir"`
-	Umur            float64 `json:"umur"`
+	TanggalLahir    int     `json:"tanggal_lahir"`
+	BulanLahir      string  `json:"bulan_lahir"`
+	TahunLahir      int     `json:"tahun_lahir"`
+	Umur            string  `json:"umur"`
 	Tinggi          float64 `json:"tinggi"`
 	BeratBadan      float64 `json:"berat_badan"`
 	Gender          string  `json:"gender"`
+	AnakKe          int     `json:"anak_ke"`
 	LingkarKepala   float64 `json:"lingkar_kepala"`
 	LingkarLengan   float64 `json:"lingkar_lengan"`
 	GolonganDarah   string  `json:"golongan_darah"`
@@ -24,13 +25,13 @@ type TambahDataAnak struct {
 
 type EditDataAnak struct {
 	Nama            string   `json:"nama"`
-	TanggalLahir    *float64 `json:"tanggal_lahir"`
-	BulanLahir      *float64 `json:"bulan_lahir"`
-	TahunLahir      *float64 `json"tahun_lahir"`
-	Umur            *float64 `json:"umur"`
+	TanggalLahir    int      `json:"tanggal_lahir"`
+	BulanLahir      string   `json:"bulan_lahir"`
+	TahunLahir      int      `json:"tahun_lahir"`
 	Tinggi          *float64 `json:"tinggi"`
 	BeratBadan      *float64 `json:"berat_badan"`
 	Gender          string   `json:"gender"`
+	AnakKe          int      `json:"anak_ke"`
 	LingkarKepala   *float64 `json:"lingkar_kepala"`
 	LingkarLengan   *float64 `json:"lingkar_lengan"`
 	GolonganDarah   string   `json:"golongan_darah"`
@@ -41,13 +42,15 @@ type EditDataAnak struct {
 type AnakResponse struct {
 	Id              uuid.UUID `json:"id"`
 	Nama            string    `json:"nama"`
-	TanggalLahir    float64   `json:"tanggal_lahir"`
-	BulanLahir      float64   `json:"bulan_lahir"`
-	TahunLahir      float64   `json"tahun_lahir"`
-	Umur            float64   `json:"umur"`
+	TanggalLahir    int       `json:"tanggal_lahir"`
+	BulanLahir      string    `json:"bulan_lahir"`
+	TahunLahir      int       `json:"tahun_lahir"`
+	Umur            string    `json:"umur"`
 	Tinggi          float64   `json:"tinggi"`
 	BeratBadan      float64   `json:"berat_badan"`
 	Gender          string    `json:"gender"`
+	AnakKe          int       `json:"anak_ke"`
+	AnakKeLabel     string    `json:"anak_ke_label"`
 	LingkarKepala   float64   `json:"lingkar_kepala"`
 	LingkarLengan   float64   `json:"lingkar_lengan"`
 	GolonganDarah   string    `json:"golongan_darah"`
@@ -64,20 +67,16 @@ func (p *EditDataAnak) ToMap() map[string]any {
 		perbaruan["nama"] = p.Nama
 	}
 
-	if p.TanggalLahir != nil {
+	if p.TanggalLahir != 0 {
 		perbaruan["tanggal_lahir"] = p.TanggalLahir
 	}
 
-	if p.BulanLahir != nil {
+	if p.BulanLahir != "" {
 		perbaruan["bulan_lahir"] = p.BulanLahir
 	}
 
-	if p.TahunLahir != nil {
+	if p.TahunLahir != 0 {
 		perbaruan["tahun_lahir"] = p.TahunLahir
-	}
-
-	if p.Umur != nil {
-		perbaruan["umur"] = p.Umur
 	}
 
 	if p.Tinggi != nil {
@@ -90,6 +89,10 @@ func (p *EditDataAnak) ToMap() map[string]any {
 
 	if p.Gender != "" {
 		perbaruan["gender"] = p.Gender
+	}
+
+	if p.AnakKe != 0 {
+		perbaruan["anak_ke"] = p.AnakKe
 	}
 
 	if p.LingkarKepala != nil {
@@ -126,6 +129,8 @@ func ToAnakResponse(Anak entity.Anak) AnakResponse {
 		Tinggi:          Anak.Tinggi,
 		BeratBadan:      Anak.BeratBadan,
 		Gender:          Anak.Gender,
+		AnakKe:          Anak.AnakKe,
+		AnakKeLabel:     AnakKeToLabel(int(Anak.AnakKe)),
 		LingkarKepala:   Anak.LingkarKepala,
 		LingkarLengan:   Anak.LingkarLengan,
 		GolonganDarah:   Anak.GolonganDarah,
@@ -143,4 +148,15 @@ func ToAnakResponses(Anak []entity.Anak) []AnakResponse {
 	}
 
 	return responses
+}
+
+func AnakKeToLabel(n int) string {
+	labels := []string{
+		"Pertama", "Kedua", "Ketiga",
+	}
+
+	if n >= 1 && n <= len(labels) {
+		return "Anak " + labels[n-1]
+	}
+	return ""
 }

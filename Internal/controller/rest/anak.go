@@ -124,3 +124,44 @@ func (p *V1) EditDataAnak(c *gin.Context) {
 		"pesan": "berhasil",
 	})
 }
+
+func (p *V1) GetGenderOptions(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"data": []map[string]string{
+			{"label": "Laki-Laki", "value": "laki-laki"},
+			{"label": "Perempuan", "value": "perempuan"},
+		},
+	})
+}
+
+func (p *V1) GetGolonganOption(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"data": []map[string]string{
+			{"label": "O", "value": "O"},
+			{"label": "A", "value": "A"},
+			{"label": "B", "value": "B"},
+			{"label": "AB", "value": "AB"},
+		},
+	})
+}
+
+func (p *V1) GetAnakKeOptions(c *gin.Context) {
+	labels := []string{
+		"Pertama",
+		"Kedua",
+		"Ketiga",
+	}
+
+	var options []map[string]any
+
+	for i, label := range labels {
+		options = append(options, map[string]any{
+			"label": "Anak " + label,
+			"value": i + 1,
+		})
+	}
+
+	c.JSON(200, gin.H{
+		"data": options,
+	})
+}

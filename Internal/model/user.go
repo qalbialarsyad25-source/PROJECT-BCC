@@ -1,16 +1,11 @@
 package model
 
-type BuatUser struct {
-	Nama string `json:"nama"`
-}
-
-type EditUser struct {
-	Nama string `json:"nama"`
-}
-
 type UserRegister struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=5"`
+	Nama            string `json:"nama" validate:"required"`
+	UserName        string `json:"username" validate:"required,min=3"`
+	Email           string `json:"email" validate:"required,email"`
+	Password        string `json:"password" validate:"required,min=8"`
+	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
 type UserLogin struct {

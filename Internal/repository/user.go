@@ -4,6 +4,7 @@ import (
 	"bcc-geazy/internal/entity"
 	"bcc-geazy/internal/model"
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -35,7 +36,6 @@ func (p *UserRepository) GetUser(ctx context.Context, pagination model.Paginatio
 	user, err := gorm.G[entity.User](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat_pada ").
 		Find(ctx)
 	if err != nil {
 		return nil, err
@@ -51,6 +51,9 @@ func (u *UserRepository) GetUserByEmail(ctx context.Context, email string) (*ent
 		First(&user).Error
 
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 

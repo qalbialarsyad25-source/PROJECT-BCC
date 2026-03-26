@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 	"golang.org/x/oauth2"
@@ -38,6 +39,17 @@ func NewAuthUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oAuth2 *oauth2.Config, 
 }
 
 func (u *AuthUsecase) Register(ctx context.Context, a model.UserRegister) error {
+	existingUser, _ := u.UserRepository.GetUserByEmail(ctx, a.Email)
+	if existingUser != nil {
+		return errors.New("email sudah digunakan")
+	}
+
+	a.Email = strings.ToLower(a.Email)
+
+	if a.Password != a.ConfirmPassword {
+		return errors.New("Password tidak sama")
+	}
+
 	hashedPassword, err := u.Bcrypt.GenerateHash(a.Password)
 	if err != nil {
 		return err
@@ -45,6 +57,8 @@ func (u *AuthUsecase) Register(ctx context.Context, a model.UserRegister) error 
 
 	user := entity.User{
 		Id:       uuid.New(),
+		Nama:     a.Nama,
+		UserName: a.UserName,
 		Email:    a.Email,
 		Password: hashedPassword,
 		Role:     model.UserRoleUser,

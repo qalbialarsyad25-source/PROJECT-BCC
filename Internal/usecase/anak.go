@@ -5,6 +5,8 @@ import (
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
 	"context"
+	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -26,6 +28,21 @@ func NewAnakUsecase(anakRepository repository.IAnakRepository) *AnakUsecase {
 
 func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak, userID uuid.UUID) (*model.AnakResponse, error) {
 
+	if !GenderValid(buatAnak.Gender) {
+		return nil, errors.New("Gender tidak valid")
+	}
+
+	if !ValidGolonganDarah(buatAnak.GolonganDarah) {
+		return nil, errors.New("Golongan darah tidak valid")
+	}
+
+	if buatAnak.AnakKe < 1 || buatAnak.AnakKe > 15 {
+		return nil, errors.New("anak ke tidak valid")
+	}
+
+	golongandarah := strings.ToUpper(buatAnak.GolonganDarah)
+	gender := strings.ToLower(buatAnak.Gender)
+
 	bmi, status := HitungBMI(buatAnak.BeratBadan, buatAnak.Tinggi)
 	umur := HitungUmur(buatAnak.TahunLahir)
 
@@ -39,10 +56,11 @@ func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahD
 		Umur:            umur,
 		Tinggi:          buatAnak.Tinggi,
 		BeratBadan:      buatAnak.BeratBadan,
-		Gender:          buatAnak.Gender,
+		Gender:          gender,
+		AnakKe:          buatAnak.AnakKe,
 		LingkarLengan:   buatAnak.LingkarLengan,
 		LingkarKepala:   buatAnak.LingkarKepala,
-		GolonganDarah:   buatAnak.GolonganDarah,
+		GolonganDarah:   golongandarah,
 		Alergi:          buatAnak.Alergi,
 		RiwayatPenyakit: buatAnak.RiwayatPenyakit,
 		BMI:             bmi,
