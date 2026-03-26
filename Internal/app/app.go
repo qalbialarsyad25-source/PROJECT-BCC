@@ -2,6 +2,7 @@ package app
 
 import (
 	"bcc-geazy/internal/controller/rest"
+	"bcc-geazy/internal/delivery/websocket"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/internal/seeder"
 	"bcc-geazy/internal/usecase"
@@ -27,8 +28,12 @@ func Run() {
 
 	db := sql.StartMySQL()
 
+	repo := repository.NewRepository(db)
+
 	seeder.InfoMakanan(db)
 	app := httpserver.Start()
+
+	wsManager := websocket.NewWSManager()
 
 	jwtInit := jwt.NewJWT()
 	bcryptService := bcrypt.NewBcrypt()
@@ -36,11 +41,9 @@ func Run() {
 	mw := middleware.NewMiddleware(jwtInit)
 	validator := validator.New()
 
-	repo := repository.NewRepository(db)
-
-	uc := usecase.NewUsecase(jwtInit, bcryptService, oauthConfig, repo)
+	uc := usecase.NewUsecase(jwtInit, bcryptService, oauthConfig, repo, wsManager)
 	v1 := rest.NewV1(mw, validator, uc)
-	rest.NewRouter(app, v1)
+	rest.NewRouter(app, v1, wsManager)
 
 	if err := app.Run(":" + os.Getenv("APP_PORT")); err != nil {
 		log.Fatalf("Gagal start server : %s", err.Error())

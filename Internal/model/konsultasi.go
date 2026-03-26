@@ -8,6 +8,9 @@ import (
 )
 
 type BuatPesan struct {
+	UserID     uuid.UUID `json:"user_id"`
+	DokterID   uuid.UUID `json:"dokter_id"`
+	SenderID   uuid.UUID `json:"sender_id"`
 	Pesan      string    `json:"pesan"`
 	WaktuPesan time.Time `json:"waktu_pesan"`
 }

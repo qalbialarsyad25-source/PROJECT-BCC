@@ -1,10 +1,13 @@
 package rest
 
 import (
+	"bcc-geazy/internal/delivery/websocket"
+
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(app *gin.Engine, v1 *V1) {
+func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
+	wsHandler := websocket.NewWSHandler(wsManager)
 	api := app.Group("/api/v1")
 	{
 
@@ -36,8 +39,8 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 		{
 			informasi.GET("", v1.IMiddleware.Authentication, v1.GetInformasi)
 			informasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateInformasi)
-			informasi.DELETE("/:id", v1.DeleteInformasi)
-			informasi.PATCH("/:id", v1.EditInformasi)
+			informasi.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteInformasi)
+			informasi.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditInformasi)
 		}
 
 		makanan := api.Group("/makanan")
@@ -47,6 +50,20 @@ func NewRouter(app *gin.Engine, v1 *V1) {
 			makanan.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditMakanan)
 			makanan.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteMakanan)
 		}
+
+		konsultasi := api.Group("/konsultasi")
+		{
+			konsultasi.GET("", v1.IMiddleware.Authentication, v1.GetKonsultasi)
+			konsultasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user", "dokter"), v1.CreateKonsultasi)
+		}
+
+		dokter := api.Group("/dokter")
+		{
+			dokter.GET("", v1.IMiddleware.Authentication, v1.GetDokter)
+			dokter.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateDokter)
+		}
 	}
+
+	app.GET("/ws/chat", wsHandler.HandleWS)
 
 }

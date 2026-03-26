@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"bcc-geazy/internal/delivery/websocket"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/pkg/bcrypt"
 	"bcc-geazy/pkg/jwt"
@@ -19,14 +20,14 @@ type Usecase struct {
 	AuthUsecase       IAuthUsecase
 }
 
-func NewUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oauth *oauth2.Config, repository *repository.Repository) *Usecase {
+func NewUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oauth *oauth2.Config, repository *repository.Repository, ws *websocket.WSManager) *Usecase {
 	return &Usecase{
 		AnakUsecase:       NewAnakUsecase(repository.AnakRepository),
 		MakananUsecase:    NewMakananUsecase(repository.MakananRepository),
 		LogUsecase:        NewLogUsecase(repository.LogRepository),
 		LogMakananUsecase: NewLogMakananUsecase(repository.LogMakananRepository),
 		DokterUsecase:     NewDokterUsecase(repository.DokterRepository),
-		KonsultasiUsecase: NewKonsultasiUsecase(repository.KonsultasiRepository),
+		KonsultasiUsecase: NewKonsultasiUsecase(repository.KonsultasiRepository, ws),
 		InformasiUsecase:  NewInformasiUsecase(repository.InformasiRepository),
 		AuthUsecase:       NewAuthUsecase(jwt, bcrypt, oauth, repository.UserRepository),
 	}
