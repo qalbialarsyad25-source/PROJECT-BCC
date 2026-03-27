@@ -32,8 +32,7 @@ func (p *LogUsecase) GetLog(ctx context.Context, AnakID uuid.UUID, pagination mo
 	responses := model.ToLogResponses(log)
 
 	for i, l := range log {
-		makanan := model.ToLogMakananResponses(l.LogMakanan)
-		protein, lemak, karbo := HitungTotalNutrisi(makanan)
+		protein, lemak, karbo := HitungNutrisiPerLog(l)
 		totalKalori := hitungKalori(protein, lemak, karbo)
 		responses[i].TotalKalori = totalKalori
 	}

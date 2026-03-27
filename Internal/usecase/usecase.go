@@ -18,6 +18,7 @@ type Usecase struct {
 	KonsultasiUsecase IKonsultasiUsecase
 	InformasiUsecase  IInformasiUsecase
 	AuthUsecase       IAuthUsecase
+	NutrisiUsecase    INutrisiUsecase
 }
 
 func NewUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oauth *oauth2.Config, repository *repository.Repository, ws *websocket.WSManager) *Usecase {
@@ -30,5 +31,6 @@ func NewUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oauth *oauth2.Config, repos
 		KonsultasiUsecase: NewKonsultasiUsecase(repository.KonsultasiRepository, ws),
 		InformasiUsecase:  NewInformasiUsecase(repository.InformasiRepository),
 		AuthUsecase:       NewAuthUsecase(jwt, bcrypt, oauth, repository.UserRepository),
+		NutrisiUsecase:    NewNutrisiUsecase(repository.LogRepository, repository.AnakRepository),
 	}
 }

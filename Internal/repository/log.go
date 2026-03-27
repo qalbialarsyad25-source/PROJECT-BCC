@@ -4,6 +4,7 @@ import (
 	"bcc-geazy/internal/entity"
 	"bcc-geazy/internal/model"
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -14,6 +15,7 @@ type ILogRepository interface {
 	CreateLog(ctx context.Context, log entity.Log, logmakanan []entity.LogMakanan) error
 	GetLog(ctx context.Context, AnakID uuid.UUID, pagination model.Pagination) ([]entity.Log, error)
 	DeleteLog(ctx context.Context, id uuid.UUID) error
+	GetLogHariIni(ctx context.Context, anakID uuid.UUID) ([]entity.Log, error)
 }
 
 type LogRepository struct {
@@ -78,4 +80,23 @@ func (p *LogRepository) DeleteLog(ctx context.Context, id uuid.UUID) error {
 
 		return nil
 	})
+}
+
+func (p *LogRepository) GetLogHariIni(ctx context.Context, anakID uuid.UUID) ([]entity.Log, error) {
+	var logs []entity.Log
+
+	mulaiHariini := time.Now().Truncate(24 * time.Hour)
+	akhirHariini := mulaiHariini.Add(24 * time.Hour)
+
+	err := p.db.WithContext(ctx).
+		Preload("LogMakanan.Makanan").
+		Where("anak_id = ? AND waktu_makan BETWEEN ? AND ?", anakID, mulaiHariini, akhirHariini).
+		Order("waktu_makan DESC").
+		Find(&logs).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return logs, nil
 }

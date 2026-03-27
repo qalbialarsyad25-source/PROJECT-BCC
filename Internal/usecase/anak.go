@@ -4,9 +4,11 @@ import (
 	"bcc-geazy/internal/entity"
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
+	"bcc-geazy/internal/utils"
 	"context"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -28,11 +30,11 @@ func NewAnakUsecase(anakRepository repository.IAnakRepository) *AnakUsecase {
 
 func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak, userID uuid.UUID) (*model.AnakResponse, error) {
 
-	if !GenderValid(buatAnak.Gender) {
+	if !utils.GenderValid(buatAnak.Gender) {
 		return nil, errors.New("Gender tidak valid")
 	}
 
-	if !ValidGolonganDarah(buatAnak.GolonganDarah) {
+	if !utils.ValidGolonganDarah(buatAnak.GolonganDarah) {
 		return nil, errors.New("Golongan darah tidak valid")
 	}
 
@@ -40,19 +42,22 @@ func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahD
 		return nil, errors.New("anak ke tidak valid")
 	}
 
+	tgl, err := time.Parse("2006-01-02", buatAnak.TanggalLahir)
+	if err != nil {
+		return nil, err
+	}
+
 	golongandarah := strings.ToUpper(buatAnak.GolonganDarah)
 	gender := strings.ToLower(buatAnak.Gender)
 
 	bmi, status := HitungBMI(buatAnak.BeratBadan, buatAnak.Tinggi)
-	umur := HitungUmur(buatAnak.TahunLahir)
+	umur := utils.HitungUmur(tgl)
 
 	anak := entity.Anak{
 		Id:              uuid.New(),
 		UserID:          userID,
 		Nama:            buatAnak.Nama,
-		TanggalLahir:    buatAnak.TanggalLahir,
-		BulanLahir:      buatAnak.BulanLahir,
-		TahunLahir:      buatAnak.TahunLahir,
+		TanggalLahir:    tgl,
 		Umur:            umur,
 		Tinggi:          buatAnak.Tinggi,
 		BeratBadan:      buatAnak.BeratBadan,
@@ -67,7 +72,7 @@ func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahD
 		StatusGizi:      status,
 	}
 
-	err := p.AnakRepository.CreateDataAnak(ctx, anak)
+	err = p.AnakRepository.CreateDataAnak(ctx, anak)
 	if err != nil {
 		return nil, err
 	}

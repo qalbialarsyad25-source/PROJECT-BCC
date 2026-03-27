@@ -26,6 +26,10 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			anak.DELETE("/:id", v1.DeleteDataAnak)
 			anak.PATCH("/:id", v1.EditDataAnak)
 
+			nutrisi := anak.Group("/nutrisi")
+			{
+				nutrisi.GET("/:id", v1.IMiddleware.Authentication, v1.GetNutrisiHarian)
+			}
 			option := anak.Group("/option")
 			{
 				option.GET("/gender", v1.IMiddleware.Authentication, v1.GetGenderOptions)

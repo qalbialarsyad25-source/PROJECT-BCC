@@ -14,6 +14,7 @@ type IAnakRepository interface {
 	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
 	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
+	GetAnakByID(ctx context.Context, id uuid.UUID) (entity.Anak, error)
 }
 
 type AnakRepository struct {
@@ -73,4 +74,14 @@ func (p *AnakRepository) EditDataAnak(ctx context.Context, id uuid.UUID, edit mo
 	}
 
 	return nil
+}
+
+func (p *AnakRepository) GetAnakByID(ctx context.Context, id uuid.UUID) (entity.Anak, error) {
+	var anak entity.Anak
+
+	err := p.db.WithContext(ctx).
+		Where("id = ?", id).
+		First(&anak).Error
+
+	return anak, err
 }

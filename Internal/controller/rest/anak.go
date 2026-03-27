@@ -165,3 +165,21 @@ func (p *V1) GetAnakKeOptions(c *gin.Context) {
 		"data": options,
 	})
 }
+
+func (p *V1) GetNutrisiHarian(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	result, err := p.usecase.NutrisiUsecase.GetNutrisiHarian(ctx, id)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}

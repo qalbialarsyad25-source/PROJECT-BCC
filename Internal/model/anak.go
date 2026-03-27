@@ -2,16 +2,14 @@ package model
 
 import (
 	"bcc-geazy/internal/entity"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 type TambahDataAnak struct {
 	Nama            string  `json:"nama"`
-	TanggalLahir    int     `json:"tanggal_lahir"`
-	BulanLahir      string  `json:"bulan_lahir"`
-	TahunLahir      int     `json:"tahun_lahir"`
-	Umur            string  `json:"umur"`
+	TanggalLahir    string  `json:"tanggal_lahir"`
 	Tinggi          float64 `json:"tinggi"`
 	BeratBadan      float64 `json:"berat_badan"`
 	Gender          string  `json:"gender"`
@@ -25,9 +23,7 @@ type TambahDataAnak struct {
 
 type EditDataAnak struct {
 	Nama            string   `json:"nama"`
-	TanggalLahir    int      `json:"tanggal_lahir"`
-	BulanLahir      string   `json:"bulan_lahir"`
-	TahunLahir      int      `json:"tahun_lahir"`
+	TanggalLahir    string   `json:"tanggal_lahir"`
 	Tinggi          *float64 `json:"tinggi"`
 	BeratBadan      *float64 `json:"berat_badan"`
 	Gender          string   `json:"gender"`
@@ -42,10 +38,8 @@ type EditDataAnak struct {
 type AnakResponse struct {
 	Id              uuid.UUID `json:"id"`
 	Nama            string    `json:"nama"`
-	TanggalLahir    int       `json:"tanggal_lahir"`
-	BulanLahir      string    `json:"bulan_lahir"`
-	TahunLahir      int       `json:"tahun_lahir"`
-	Umur            string    `json:"umur"`
+	TanggalLahir    time.Time `json:"tanggal_lahir"`
+	Umur            int       `json:"umur"`
 	Tinggi          float64   `json:"tinggi"`
 	BeratBadan      float64   `json:"berat_badan"`
 	Gender          string    `json:"gender"`
@@ -67,16 +61,8 @@ func (p *EditDataAnak) ToMap() map[string]any {
 		perbaruan["nama"] = p.Nama
 	}
 
-	if p.TanggalLahir != 0 {
+	if p.TanggalLahir != "" {
 		perbaruan["tanggal_lahir"] = p.TanggalLahir
-	}
-
-	if p.BulanLahir != "" {
-		perbaruan["bulan_lahir"] = p.BulanLahir
-	}
-
-	if p.TahunLahir != 0 {
-		perbaruan["tahun_lahir"] = p.TahunLahir
 	}
 
 	if p.Tinggi != nil {
@@ -123,8 +109,6 @@ func ToAnakResponse(Anak entity.Anak) AnakResponse {
 		Id:              Anak.Id,
 		Nama:            Anak.Nama,
 		TanggalLahir:    Anak.TanggalLahir,
-		BulanLahir:      Anak.BulanLahir,
-		TahunLahir:      Anak.TahunLahir,
 		Umur:            Anak.Umur,
 		Tinggi:          Anak.Tinggi,
 		BeratBadan:      Anak.BeratBadan,
