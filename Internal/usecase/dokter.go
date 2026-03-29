@@ -15,6 +15,8 @@ type IDokterUsecase interface {
 	GetDokter(ctx context.Context, pagination model.Pagination) ([]model.DokterResponse, error)
 	DeleteDokter(ctx context.Context, id uuid.UUID) error
 	EditDokter(ctx context.Context, id uuid.UUID, edit model.EditDokter) error
+	UpdateFotoProfil(ctx context.Context, id uuid.UUID, url string) error
+	GetDokterByID(ctx context.Context, id uuid.UUID) (entity.Dokter, error)
 }
 
 type DokterUsecase struct {
@@ -54,6 +56,7 @@ func (p *DokterUsecase) CreateDataDokter(ctx context.Context, buatDokter model.B
 		UserId:    user.Id,
 		Nama:      buatDokter.Nama,
 		Spesialis: buatDokter.Spesialis,
+		Profil:    "",
 	}
 
 	err = p.DokterRepository.CreateDataDokter(ctx, dokter)
@@ -81,4 +84,19 @@ func (p *DokterUsecase) DeleteDokter(ctx context.Context, id uuid.UUID) error {
 
 func (p *DokterUsecase) EditDokter(ctx context.Context, id uuid.UUID, edit model.EditDokter) error {
 	return p.DokterRepository.EditDataDokter(ctx, id, edit)
+}
+
+func (p *DokterUsecase) UpdateFotoProfil(ctx context.Context, id uuid.UUID, url string) error {
+	dokter, err := p.DokterRepository.GetDokterByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	dokter.Profil = url
+
+	return p.DokterRepository.UpdateDokter(ctx, dokter)
+}
+
+func (p *DokterUsecase) GetDokterByID(ctx context.Context, id uuid.UUID) (entity.Dokter, error) {
+	return p.DokterRepository.GetDokterByID(ctx, id)
 }
