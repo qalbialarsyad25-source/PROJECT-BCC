@@ -42,9 +42,9 @@ func (u *NutrisiUsecase) GetNutrisiHarian(ctx context.Context, anakID uuid.UUID)
 
 	umur := utils.HitungUmur(anak.TanggalLahir)
 
-	targetKalori := utils.HitungKebutuhanKalori(umur, anak.BeratBadan, anak.Gender)
-	targetProtein := utils.HitungKebutuhanProtein(anak.BeratBadan)
-	targetLemak := utils.HitungKebutuhanLemak(targetKalori)
+	targetKalori := HitungKebutuhanKalori(umur, anak.BeratBadan, anak.Gender)
+	targetProtein := HitungKebutuhanProtein(anak.BeratBadan)
+	targetLemak := HitungKebutuhanLemak(targetKalori)
 
 	persenKalori := HitungPersen(totalKalori, targetKalori)
 	persenProtein := HitungPersen(protein, targetProtein)

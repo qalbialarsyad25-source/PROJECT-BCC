@@ -38,7 +38,7 @@ func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahD
 		return nil, errors.New("Golongan darah tidak valid")
 	}
 
-	if buatAnak.AnakKe < 1 || buatAnak.AnakKe > 15 {
+	if buatAnak.AnakKe < 1 || buatAnak.AnakKe > 3 {
 		return nil, errors.New("anak ke tidak valid")
 	}
 

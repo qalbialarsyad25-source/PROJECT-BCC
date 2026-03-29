@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"bcc-geazy/internal/delivery/websocket"
+	websocket "bcc-geazy/internal/controller/delivery"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,6 +52,13 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			informasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateInformasi)
 			informasi.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteInformasi)
 			informasi.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditInformasi)
+
+			log := informasi.Group("/:id/log-informasi")
+			{
+				log.POST("", v1.IMiddleware.Authentication, v1.CreateLogInformasi)
+				log.GET("", v1.IMiddleware.Authentication, v1.GetLogInformasi)
+				log.DELETE("/:logId", v1.DeleteLogInformasi)
+			}
 		}
 
 		makanan := api.Group("/makanan")
@@ -75,8 +82,18 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			dokter.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteDokter)
 			dokter.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditDokter)
 		}
+
+		notifikasi := api.Group("/notifikasi")
+		{
+			notifikasi.GET("", v1.GetNotifikasi)
+			notifikasi.POST("", v1.CreateNotifikasi)
+			notifikasi.DELETE("/:id", v1.DeleteNotifikasi)
+			notifikasi.PATCH("/:id", v1.EditNotifikasi)
+		}
+
 	}
 
+	app.GET("/ws", wsHandler.HandleWS)
 	app.GET("/ws/chat", wsHandler.HandleWS)
 
 }

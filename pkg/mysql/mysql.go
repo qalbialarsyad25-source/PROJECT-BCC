@@ -39,6 +39,7 @@ func Migrate(db *gorm.DB) {
 		&entity.Dokter{},
 		&entity.Konsultasi{},
 		&entity.Informasi{},
+		&entity.LogInformasi{},
 	)
 
 	if err != nil {

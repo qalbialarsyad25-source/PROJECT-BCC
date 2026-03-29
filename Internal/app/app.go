@@ -1,8 +1,8 @@
 package app
 
 import (
+	websocket "bcc-geazy/internal/controller/delivery"
 	"bcc-geazy/internal/controller/rest"
-	"bcc-geazy/internal/delivery/websocket"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/internal/seeder"
 	"bcc-geazy/internal/usecase"
@@ -42,7 +42,7 @@ func Run() {
 	validator := validator.New()
 
 	uc := usecase.NewUsecase(jwtInit, bcryptService, oauthConfig, repo, wsManager)
-	v1 := rest.NewV1(mw, validator, uc)
+	v1 := rest.NewV1(mw, validator, uc, wsManager)
 	rest.NewRouter(app, v1, wsManager)
 
 	if err := app.Run(":" + os.Getenv("APP_PORT")); err != nil {
