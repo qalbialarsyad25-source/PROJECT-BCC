@@ -8,6 +8,6 @@ import (
 func main() {
 
 	app.Run()
-	config.SambungDatabase()
+	config.NewConfig()
 
 }

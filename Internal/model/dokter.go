@@ -11,17 +11,20 @@ type BuatUserDokter struct {
 	Password  string `json:"password"`
 	Nama      string `json:"nama"`
 	Spesialis string `json:"spesialis"`
+	Profil    string `json:"profil"`
 }
 
 type DokterResponse struct {
 	Id        uuid.UUID `json:"id"`
 	Nama      string    `json:"nama"`
 	Spesialis string    `json:"spesialis"`
+	Profil    string    `json:"profil"`
 }
 
 type EditDokter struct {
 	Nama      string `json:"nama"`
 	Spesialis string `json:"spesialis"`
+	Profil    string `json:"profil"`
 }
 
 func ToDokterResponse(Dokter entity.Dokter) DokterResponse {
@@ -29,6 +32,7 @@ func ToDokterResponse(Dokter entity.Dokter) DokterResponse {
 		Id:        Dokter.Id,
 		Nama:      Dokter.Nama,
 		Spesialis: Dokter.Spesialis,
+		Profil:    Dokter.Profil,
 	}
 }
 
@@ -50,6 +54,10 @@ func (e *EditDokter) ToMap() map[string]any {
 
 	if e.Spesialis != "" {
 		updates["spesialis"] = e.Spesialis
+	}
+
+	if e.Profil != "" {
+		updates["Profil"] = e.Profil
 	}
 	return updates
 }

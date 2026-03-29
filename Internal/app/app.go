@@ -15,17 +15,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"github.com/go-playground/validator/v10"
 )
 
 func Run() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error : %v", err)
-	}
-
 	db := sql.StartMySQL()
 
 	repo := repository.NewRepository(db)
