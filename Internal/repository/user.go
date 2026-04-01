@@ -42,7 +42,6 @@ func (p *UserRepository) GetUser(ctx context.Context, pagination model.Paginatio
 	user, err := gorm.G[entity.User](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
-		Order("Dibuat_pada ").
 		Find(ctx)
 	if err != nil {
 		return nil, err

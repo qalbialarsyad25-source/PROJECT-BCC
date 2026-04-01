@@ -5,7 +5,9 @@ import (
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/pkg/bcrypt"
+	"bcc-geazy/pkg/storage"
 	"context"
+	"mime/multipart"
 
 	"github.com/google/uuid"
 )
@@ -15,7 +17,7 @@ type IDokterUsecase interface {
 	GetDokter(ctx context.Context, pagination model.Pagination) ([]model.DokterResponse, error)
 	DeleteDokter(ctx context.Context, id uuid.UUID) error
 	EditDokter(ctx context.Context, id uuid.UUID, edit model.EditDokter) error
-	UpdateFotoProfil(ctx context.Context, id uuid.UUID, url string) error
+	UploadFoto(ctx context.Context, dokterID uuid.UUID, file multipart.File, filename string) (string, error)
 	GetDokterByID(ctx context.Context, id uuid.UUID) (entity.Dokter, error)
 }
 
@@ -86,15 +88,26 @@ func (p *DokterUsecase) EditDokter(ctx context.Context, id uuid.UUID, edit model
 	return p.DokterRepository.EditDataDokter(ctx, id, edit)
 }
 
-func (p *DokterUsecase) UpdateFotoProfil(ctx context.Context, id uuid.UUID, url string) error {
-	dokter, err := p.DokterRepository.GetDokterByID(ctx, id)
+func (p *DokterUsecase) UploadFoto(ctx context.Context, dokterID uuid.UUID, file multipart.File, filename string) (string, error) {
+
+	dokter, err := p.DokterRepository.GetDokterByID(ctx, dokterID)
 	if err != nil {
-		return err
+		return "", err
+	}
+
+	url, err := storage.UploadToSupabase(file, filename)
+	if err != nil {
+		return "", err
 	}
 
 	dokter.Profil = url
 
-	return p.DokterRepository.UpdateDokter(ctx, dokter)
+	err = p.DokterRepository.UpdateDokter(ctx, dokter)
+	if err != nil {
+		return "", err
+	}
+
+	return url, nil
 }
 
 func (p *DokterUsecase) GetDokterByID(ctx context.Context, id uuid.UUID) (entity.Dokter, error) {

@@ -2,7 +2,6 @@ package rest
 
 import (
 	"bcc-geazy/internal/model"
-	"os"
 	"strings"
 
 	"path/filepath"
@@ -167,29 +166,42 @@ func (p *V1) UploadFotoDokter(c *gin.Context) {
 		return
 	}
 
-	filename := uuid.New().String() + ext
-	path := "./uploads/" + filename
+	f, err := file.Open()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "gagal buka file"})
+		return
+	}
+	defer f.Close()
 
-	if err := c.SaveUploadedFile(file, path); err != nil {
-		c.JSON(500, gin.H{"error": "gagal upload"})
+	filename := uuid.New().String() + ext
+	url, err := p.usecase.DokterUsecase.UploadFoto(ctx, dokterID, f, filename)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	if dokter.Profil != "" {
-		if err := os.Remove("." + dokter.Profil); err != nil {
-		}
+	c.JSON(200, gin.H{
+		"message": "foto berhasil diupload",
+		"url":     url,
+	})
+}
 
-		url := "/uploads/" + filename
-
-		err = p.usecase.DokterUsecase.UpdateFotoProfil(ctx, dokterID, url)
-		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(200, gin.H{
-			"message": "foto berhasil diupload",
-			"url":     url,
-		})
+func (p *V1) GetDetailDokter(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "id tidak valid"})
+		return
 	}
+
+	ctx := c.Request.Context()
+
+	dokter, err := p.usecase.DokterUsecase.GetDokterByID(ctx, id)
+	if err != nil {
+		c.JSON(404, gin.H{"error": "dokter tidak ditemukan"})
+		return
+	}
+
+	res := model.ToDokterResponse(dokter)
+
+	c.JSON(200, res)
 }
