@@ -57,7 +57,7 @@ func InfoMakanan(db *gorm.DB) {
 		err := db.Where("nama = ?", infomakanan.Nama).First(&info).Error
 
 		if err == gorm.ErrRecordNotFound {
-			db.Create(&makanan)
+			db.Create(&infomakanan)
 		}
 	}
 }

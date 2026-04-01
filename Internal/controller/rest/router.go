@@ -17,6 +17,8 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			auth.POST("/login", v1.Login)
 			auth.GET("/google/login", v1.LoginGoogle)
 			auth.GET("/google/callback", v1.CallbackGoogle)
+			auth.POST("/forgot-password", v1.ForgotPassword)
+			auth.POST("/reset-password", v1.ResetPassword)
 		}
 
 		anak := api.Group("/anak")

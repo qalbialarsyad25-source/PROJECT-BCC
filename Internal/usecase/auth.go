@@ -5,11 +5,13 @@ import (
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/pkg/bcrypt"
+	"bcc-geazy/pkg/email"
 	"bcc-geazy/pkg/jwt"
 	"context"
 	"encoding/json"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"golang.org/x/oauth2"
@@ -20,6 +22,8 @@ type IAuthUsecase interface {
 	Login(ctx context.Context, param model.UserLogin) (string, error)
 	GoogleLogin(state string) string
 	GoogleCallback(ctx context.Context, code string) (string, error)
+	RequestResetPassword(ctx context.Context, userEmail string) error
+	ResetPassword(ctx context.Context, token string, newPassword string) error
 }
 
 type AuthUsecase struct {
@@ -135,4 +139,71 @@ func (u *AuthUsecase) GoogleCallback(ctx context.Context, code string) (string, 
 	}
 
 	return jwtToken, nil
+}
+
+func (u *AuthUsecase) RequestResetPassword(ctx context.Context, userEmail string) error {
+	userEmail = strings.ToLower(userEmail)
+
+	user, err := u.UserRepository.GetUserByEmail(ctx, userEmail)
+	if err != nil {
+		return err
+	}
+
+	if user == nil {
+		return nil
+	}
+
+	resetToken := uuid.New().String()
+	expired := time.Now().Add(15 * time.Minute)
+
+	err = u.UserRepository.SaveResetToken(ctx, user.Id, resetToken, expired)
+	if err != nil {
+		return err
+	}
+
+	resetLink := "http://localhost:3000/reset-password?token=" + resetToken
+
+	err = email.SendEmail(
+		user.Email,
+		"Reset Password",
+		"Klik link berikut untuk reset password:\n"+resetLink,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *AuthUsecase) ResetPassword(ctx context.Context, token string, newPassword string) error {
+	if newPassword == "" {
+		return errors.New("password tidak boleh kosong")
+	}
+
+	if len(newPassword) < 8 {
+		return errors.New("password minimal 8 karakter")
+	}
+
+	user, err := u.UserRepository.GetUserByResetToken(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	hashedPassword, err := u.Bcrypt.GenerateHash(newPassword)
+	if err != nil {
+		return err
+	}
+
+	err = u.UserRepository.UpdatePassword(ctx, user.Id, hashedPassword)
+	if err != nil {
+		return err
+	}
+
+	err = u.UserRepository.ClearResetToken(ctx, user.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

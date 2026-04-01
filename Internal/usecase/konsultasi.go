@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"bcc-geazy/internal/delivery/websocket"
+	"bcc-geazy/internal/controller/delivery"
 	"bcc-geazy/internal/entity"
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"

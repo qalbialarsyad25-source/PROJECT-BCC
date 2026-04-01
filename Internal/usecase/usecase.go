@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"bcc-geazy/internal/delivery/websocket"
+	"bcc-geazy/internal/controller/delivery"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/pkg/bcrypt"
 	"bcc-geazy/pkg/jwt"

@@ -4,7 +4,9 @@ import (
 	"bcc-geazy/internal/entity"
 	"bcc-geazy/internal/model"
 	"context"
-	"errors"
+	"time"
+
+	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
@@ -13,6 +15,10 @@ type IUserRepository interface {
 	CreateUser(ctx context.Context, user entity.User) error
 	GetUser(ctx context.Context, pagination model.Pagination) ([]entity.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
+	SaveResetToken(ctx context.Context, userID uuid.UUID, token string, expired time.Time) error
+	GetUserByResetToken(ctx context.Context, token string) (*entity.User, error)
+	UpdatePassword(ctx context.Context, userID uuid.UUID, password string) error
+	ClearResetToken(ctx context.Context, userID uuid.UUID) error
 }
 
 type UserRepository struct {
@@ -36,6 +42,7 @@ func (p *UserRepository) GetUser(ctx context.Context, pagination model.Paginatio
 	user, err := gorm.G[entity.User](p.db).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
+		Order("Dibuat_pada ").
 		Find(ctx)
 	if err != nil {
 		return nil, err
@@ -44,18 +51,60 @@ func (p *UserRepository) GetUser(ctx context.Context, pagination model.Paginatio
 	return user, nil
 }
 
-func (u *UserRepository) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
+func (p *UserRepository) GetUserByEmail(ctx context.Context, userEmail string) (*entity.User, error) {
 	var user entity.User
-	err := u.db.WithContext(ctx).
-		Where("email = ?", email).
+
+	err := p.db.WithContext(ctx).
+		Where("email = ?", userEmail).
 		First(&user).Error
 
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
 		return nil, err
 	}
 
 	return &user, nil
+}
+
+func (p *UserRepository) SaveResetToken(ctx context.Context, userID uuid.UUID, token string, expired time.Time) error {
+	return p.db.WithContext(ctx).
+		Model(&entity.User{}).
+		Where("id = ?", userID).
+		Updates(map[string]interface{}{
+			"reset_token":            token,
+			"reset_token_expired_at": expired,
+		}).Error
+}
+
+func (p *UserRepository) GetUserByResetToken(ctx context.Context, token string) (*entity.User, error) {
+	var user entity.User
+
+	err := p.db.WithContext(ctx).
+		Where("reset_token = ? AND reset_token_expired_at > ?", token, time.Now()).
+		First(&user).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (p *UserRepository) UpdatePassword(ctx context.Context, userID uuid.UUID, password string) error {
+	return p.db.WithContext(ctx).
+		Model(&entity.User{}).
+		Where("id = ?", userID).
+		Update("password", password).Error
+}
+
+func (p *UserRepository) ClearResetToken(ctx context.Context, userID uuid.UUID) error {
+	return p.db.WithContext(ctx).
+		Model(&entity.User{}).
+		Where("id = ?", userID).
+		Updates(map[string]interface{}{
+			"reset_token":            "",
+			"reset_token_expired_at": nil,
+		}).Error
 }

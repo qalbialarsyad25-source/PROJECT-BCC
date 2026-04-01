@@ -35,6 +35,66 @@ func (r *V1) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "user registered successfully"})
 }
 
+func (r *V1) ForgotPassword(c *gin.Context) {
+	var req model.ForgotPasswordRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "request invalid",
+		})
+		return
+	}
+
+	if err := r.validator.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	err := r.usecase.AuthUsecase.RequestResetPassword(c.Request.Context(), req.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Jika email terdaftar, link reset akan dikirimkan",
+	})
+}
+
+func (r *V1) ResetPassword(c *gin.Context) {
+	var req model.ResetPasswordRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "request invalid",
+		})
+		return
+	}
+
+	if err := r.validator.Struct(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	err := r.usecase.AuthUsecase.ResetPassword(c.Request.Context(), req.Token, req.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Gagal reset password",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "password berhasil diubah",
+	})
+}
+
 func (r *V1) Login(c *gin.Context) {
 	var loginRequest model.UserLogin
 
