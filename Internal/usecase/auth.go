@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"os"
 	"strings"
 	"time"
 
@@ -43,6 +44,12 @@ func NewAuthUsecase(jwt *jwt.JWT, bcrypt bcrypt.IBcrypt, oAuth2 *oauth2.Config, 
 }
 
 func (u *AuthUsecase) Register(ctx context.Context, a model.UserRegister) error {
+
+	a.Email = strings.ToLower(strings.TrimSpace(a.Email))
+
+	if !strings.HasSuffix(a.Email, "@gmail.com") {
+		return errors.New("email harus menggunakan @gmail.com")
+	}
 	existingUser, _ := u.UserRepository.GetUserByEmail(ctx, a.Email)
 	if existingUser != nil {
 		return errors.New("email sudah digunakan")
@@ -161,7 +168,11 @@ func (u *AuthUsecase) RequestResetPassword(ctx context.Context, userEmail string
 		return err
 	}
 
-	resetLink := "http://localhost:8080/reset-password?token=" + resetToken
+	baseURL := os.Getenv("FRONTEND_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080/api/v1"
+	}
+	resetLink := baseURL + "/reset-password?token=" + resetToken
 
 	err = email.SendEmail(
 		user.Email,

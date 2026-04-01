@@ -19,7 +19,7 @@ func (p *V1) GetMakanan(c *gin.Context) {
 		return
 	}
 
-	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "30"))
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return

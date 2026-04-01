@@ -16,7 +16,7 @@ func (p *Pagination) Check() {
 	}
 
 	if p.Limit < 1 || p.Limit > 50 {
-		p.Limit = 10
+		p.Limit = 30
 	}
 }
 

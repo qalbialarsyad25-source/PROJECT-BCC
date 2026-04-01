@@ -24,6 +24,7 @@ func Run() {
 	repo := repository.NewRepository(db)
 
 	seeder.InfoMakanan(db)
+	seeder.SeedAdmin(repo.UserRepository)
 	app := httpserver.Start()
 
 	wsManager := websocket.NewWSManager()
