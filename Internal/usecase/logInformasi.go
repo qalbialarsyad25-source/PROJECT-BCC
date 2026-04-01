@@ -10,7 +10,7 @@ import (
 )
 
 type ILogInformasiUsecase interface {
-	GetLogInformasi(ctx context.Context, userID uuid.UUID, informasiID uuid.UUID, pagination model.Pagination) ([]model.LogInformasiResponse, error)
+	GetLogInformasi(ctx context.Context, userID uuid.UUID, pagination model.Pagination) ([]model.LogInformasiResponse, error)
 	DeleteLogInformasi(ctx context.Context, id uuid.UUID) error
 	CreateLogInformasi(ctx context.Context, userID uuid.UUID, loginfo model.BuatLogInformasi) (*model.LogInformasiResponse, error)
 }
@@ -23,8 +23,8 @@ func NewLogInformasiUsecase(LogInformasiRepo repository.ILogInformasiRepository)
 	return &LogInformasiUsecase{LogInformasiRepo}
 }
 
-func (p *LogInformasiUsecase) GetLogInformasi(ctx context.Context, userID uuid.UUID, informasiID uuid.UUID, pagination model.Pagination) ([]model.LogInformasiResponse, error) {
-	loginformasi, err := p.LogInformasiRepository.GetLogInformasi(ctx, userID, informasiID, pagination)
+func (p *LogInformasiUsecase) GetLogInformasi(ctx context.Context, userID uuid.UUID, pagination model.Pagination) ([]model.LogInformasiResponse, error) {
+	loginformasi, err := p.LogInformasiRepository.GetLogInformasi(ctx, userID, pagination)
 	if err != nil {
 		return nil, err
 	}

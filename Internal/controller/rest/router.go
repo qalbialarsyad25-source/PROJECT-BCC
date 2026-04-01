@@ -21,6 +21,12 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			auth.POST("/reset-password", v1.ResetPassword)
 		}
 
+		user := api.Group("/user")
+		{
+			user.GET("/profile", v1.IMiddleware.Authentication, v1.GetProfile)
+			user.POST("/upload", v1.IMiddleware.Authentication, v1.UploadFotoUser)
+		}
+
 		anak := api.Group("/anak")
 		{
 			anak.GET("", v1.IMiddleware.Authentication, v1.GetDataAnak)
@@ -54,13 +60,13 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			informasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateInformasi)
 			informasi.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteInformasi)
 			informasi.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditInformasi)
+		}
 
-			log := informasi.Group("/:id/log-informasi")
-			{
-				log.POST("", v1.IMiddleware.Authentication, v1.CreateLogInformasi)
-				log.GET("", v1.IMiddleware.Authentication, v1.GetLogInformasi)
-				log.DELETE("/:logId", v1.DeleteLogInformasi)
-			}
+		logInformasi := api.Group("/log-informasi")
+		{
+			logInformasi.GET("", v1.IMiddleware.Authentication, v1.GetLogInformasi)
+			logInformasi.POST("", v1.IMiddleware.Authentication, v1.CreateLogInformasi)
+			logInformasi.DELETE("/:id", v1.IMiddleware.Authentication, v1.DeleteLogInformasi)
 		}
 
 		makanan := api.Group("/makanan")
@@ -96,7 +102,6 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 
 	}
 
-	app.GET("/ws", wsHandler.HandleWS)
 	app.GET("/ws/chat", wsHandler.HandleWS)
 
 }

@@ -161,7 +161,7 @@ func (u *AuthUsecase) RequestResetPassword(ctx context.Context, userEmail string
 		return err
 	}
 
-	resetLink := "http://localhost:3000/reset-password?token=" + resetToken
+	resetLink := "http://localhost:8080/reset-password?token=" + resetToken
 
 	err = email.SendEmail(
 		user.Email,

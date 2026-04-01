@@ -14,11 +14,13 @@ import (
 type IUserRepository interface {
 	CreateUser(ctx context.Context, user entity.User) error
 	GetUser(ctx context.Context, pagination model.Pagination) ([]entity.User, error)
+	GetUserById(ctx context.Context, id uuid.UUID) (*entity.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	SaveResetToken(ctx context.Context, userID uuid.UUID, token string, expired time.Time) error
 	GetUserByResetToken(ctx context.Context, token string) (*entity.User, error)
 	UpdatePassword(ctx context.Context, userID uuid.UUID, password string) error
 	ClearResetToken(ctx context.Context, userID uuid.UUID) error
+	UpdateUser(ctx context.Context, user *entity.User) error
 }
 
 type UserRepository struct {
@@ -106,4 +108,22 @@ func (p *UserRepository) ClearResetToken(ctx context.Context, userID uuid.UUID) 
 			"reset_token":            "",
 			"reset_token_expired_at": nil,
 		}).Error
+}
+
+func (p *UserRepository) GetUserById(ctx context.Context, id uuid.UUID) (*entity.User, error) {
+	var user entity.User
+
+	err := p.db.WithContext(ctx).
+		Where("id = ?", id).
+		First(&user).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (p *UserRepository) UpdateUser(ctx context.Context, user *entity.User) error {
+	return p.db.WithContext(ctx).Save(&user).Error
 }

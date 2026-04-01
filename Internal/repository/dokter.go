@@ -15,7 +15,6 @@ type IDokterRepository interface {
 	DeleteDataDokter(ctx context.Context, id uuid.UUID) error
 	EditDataDokter(ctx context.Context, id uuid.UUID, edit model.EditDokter) error
 	GetDokterByID(ctx context.Context, id uuid.UUID) (entity.Dokter, error)
-	UpdateDokter(ctx context.Context, dokter entity.Dokter) error
 }
 
 type DokterRepository struct {
@@ -80,8 +79,4 @@ func (p *DokterRepository) GetDokterByID(ctx context.Context, id uuid.UUID) (ent
 	var dokter entity.Dokter
 	err := p.db.WithContext(ctx).First(&dokter, "id = ?", id).Error
 	return dokter, err
-}
-
-func (p *DokterRepository) UpdateDokter(ctx context.Context, dokter entity.Dokter) error {
-	return p.db.WithContext(ctx).Save(&dokter).Error
 }

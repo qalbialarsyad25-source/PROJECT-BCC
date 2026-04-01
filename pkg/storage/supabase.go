@@ -1,42 +1,49 @@
 package storage
 
 import (
-	"bytes"
-	"fmt"
-	"io"
 	"mime/multipart"
-	"net/http"
 	"os"
+
+	"net/http"
+
+	storage_go "github.com/supabase-community/storage-go"
 )
 
-func UploadToSupabase(file multipart.File, filename string) (string, error) {
-	data, err := io.ReadAll(file)
+func NewStorageClient() *storage_go.Client {
+	storageURL := os.Getenv("SUPABASE_URL") + "/storage/v1"
+	storageKey := os.Getenv("SUPABASE_SERVICE_KEY")
+
+	storageClient := storage_go.NewClient(storageURL, storageKey, nil)
+	return storageClient
+}
+
+func UploadFile(file multipart.File, filename string) (string, error) {
+	client := NewStorageClient()
+
+	bucket := os.Getenv("SUPABASE_BUCKET")
+
+	buffer := make([]byte, 512)
+	file.Read(buffer)
+	file.Seek(0, 0)
+
+	contentType := http.DetectContentType(buffer)
+	upsert := true
+
+	_, err := client.UploadFile(
+		bucket,
+		filename,
+		file,
+		storage_go.FileOptions{
+			ContentType: &contentType,
+			Upsert:      &upsert,
+		},
+	)
 	if err != nil {
 		return "", err
 	}
 
-	url := os.Getenv("SUPABASE_URL") + "/storage/v1/object/" + os.Getenv("SUPABASE_BUCKET") + "/" + filename
-
-	req, err := http.NewRequest("POST", url, bytes.NewReader(data))
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("SUPABASE_SERVICE_KEY"))
-	req.Header.Set("Content-Type", "application/octet-stream")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 300 {
-		return "", fmt.Errorf("upload gagal: %s", resp.Status)
-	}
-
-	publicURL := os.Getenv("SUPABASE_URL") + "/storage/v1/object/public/" + os.Getenv("SUPABASE_BUCKET") + "/" + filename
+	publicURL := os.Getenv("SUPABASE_URL") +
+		"/storage/v1/object/public/" + bucket + "/" + filename
 
 	return publicURL, nil
 }

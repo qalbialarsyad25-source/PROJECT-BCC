@@ -20,4 +20,5 @@ type User struct {
 	LogInformasi        []LogInformasi `gorm:"foreignKey:UserID"`
 	ResetToken          string
 	ResetTokenExpiredAt *time.Time
+	Profil              string `gorm:"type:text"`
 }
