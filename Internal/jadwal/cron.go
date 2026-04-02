@@ -13,7 +13,7 @@ import (
 func StartCron(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IUserRepository, anakRepo repository.IAnakRepository) {
 	c := cron.New()
 
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("0 8 * * *", func() {
 		SimpleCheck(notifUsecase, userRepo, anakRepo)
 	})
 
