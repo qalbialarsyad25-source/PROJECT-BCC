@@ -10,6 +10,7 @@ import (
 
 func main() {
 	config.NewConfig()
+	app.Run()
 
 	mux := http.NewServeMux()
 	c := cors.New(cors.Options{
@@ -21,7 +22,5 @@ func main() {
 
 	handler := c.Handler(mux)
 	http.ListenAndServe(":8080", handler)
-
-	app.Run()
 
 }

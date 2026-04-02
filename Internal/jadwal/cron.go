@@ -13,7 +13,7 @@ import (
 func StartCron(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IUserRepository, anakRepo repository.IAnakRepository) {
 	c := cron.New()
 
-	c.AddFunc("0 8 * * *", func() {
+	c.AddFunc("@every 1m", func() {
 		SimpleCheck(notifUsecase, userRepo, anakRepo)
 	})
 
@@ -34,7 +34,7 @@ func SimpleCheck(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IU
 
 		if len(anakList) == 0 {
 
-			pesan := "Data Anak: Halo Ayah & Bunda!Sedikit lagi nih! 👋 Lengkapi data si Kecil sekarang agar Geazy bisa bantu pantau tumbuh kembangnya secara akurat. Cuma butuh 1 menit kok!"
+			pesan := "Halo Ayah & Bunda!Sedikit lagi nih! 👋 Lengkapi data si Kecil sekarang agar Geazy bisa bantu pantau tumbuh kembangnya secara akurat. Cuma butuh 1 menit kok!"
 
 			_, err := notifUsecase.CreateNotifikasi(
 				ctx,
