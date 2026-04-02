@@ -11,7 +11,7 @@ import (
 
 type IAnakRepository interface {
 	CreateDataAnak(ctx context.Context, anak entity.Anak) error
-	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error)
+	GetDataAnak(ctx context.Context, userId uuid.UUID, pagination model.Pagination) ([]entity.Anak, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
 	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
 	GetAnakByID(ctx context.Context, id uuid.UUID) (*entity.Anak, error)
@@ -36,8 +36,9 @@ func (p *AnakRepository) CreateDataAnak(ctx context.Context, anak entity.Anak) e
 	return nil
 }
 
-func (p *AnakRepository) GetDataAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error) {
+func (p *AnakRepository) GetDataAnak(ctx context.Context, userId uuid.UUID, pagination model.Pagination) ([]entity.Anak, error) {
 	anak, err := gorm.G[entity.Anak](p.db).
+		Where("user_id = ?", userId).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
 		Order("dibuat_pada DESC").

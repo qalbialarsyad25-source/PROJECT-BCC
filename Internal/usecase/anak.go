@@ -17,7 +17,7 @@ import (
 
 type IAnakUsecase interface {
 	CreateDataAnak(ctx context.Context, buatAnak model.TambahDataAnak, userID uuid.UUID) (*model.AnakResponse, error)
-	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]model.AnakResponse, error)
+	GetDataAnak(ctx context.Context, userId uuid.UUID, pagination model.Pagination) ([]model.AnakResponse, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
 	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
 	UploadFotoAnak(ctx context.Context, userID uuid.UUID, anakID uuid.UUID, file multipart.File, filename string) (string, error)
@@ -85,8 +85,8 @@ func (p *AnakUsecase) CreateDataAnak(ctx context.Context, buatAnak model.TambahD
 	return &response, nil
 }
 
-func (p *AnakUsecase) GetDataAnak(ctx context.Context, pagination model.Pagination) ([]model.AnakResponse, error) {
-	anak, err := p.AnakRepository.GetDataAnak(ctx, pagination)
+func (p *AnakUsecase) GetDataAnak(ctx context.Context, userId uuid.UUID, pagination model.Pagination) ([]model.AnakResponse, error) {
+	anak, err := p.AnakRepository.GetDataAnak(ctx, userId, pagination)
 	if err != nil {
 		return nil, err
 	}

@@ -15,6 +15,7 @@ import (
 )
 
 func (p *V1) GetDataAnak(c *gin.Context) {
+	userID := c.MustGet("userId").(uuid.UUID)
 	lembar, err := strconv.Atoi(c.DefaultQuery("lembar", "1"))
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -35,7 +36,7 @@ func (p *V1) GetDataAnak(c *gin.Context) {
 	pagination.Check()
 
 	ctx := c.Request.Context()
-	anak, err := p.usecase.AnakUsecase.GetDataAnak(ctx, pagination)
+	anak, err := p.usecase.AnakUsecase.GetDataAnak(ctx, userID, pagination)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
