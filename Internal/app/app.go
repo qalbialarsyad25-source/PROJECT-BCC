@@ -15,6 +15,9 @@ import (
 	"bcc-geazy/pkg/oauth"
 	"log"
 	"os"
+	"time"
+
+	"github.com/gin-contrib/cors"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -27,6 +30,17 @@ func Run() {
 	seeder.InfoMakanan(db)
 	seeder.SeedAdmin(repo.UserRepository)
 	app := httpserver.Start()
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000",
+			"https://geazy.vercel.app",
+		},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	wsManager := websocket.NewWSManager()
 
