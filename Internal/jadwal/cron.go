@@ -34,7 +34,7 @@ func SimpleCheck(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IU
 
 		if len(anakList) == 0 {
 
-			pesan := "Anda belum mengisi data anak, ayo isi sekarang!"
+			pesan := "Data Anak: Halo Ayah & Bunda!Sedikit lagi nih! 👋 Lengkapi data si Kecil sekarang agar Geazy bisa bantu pantau tumbuh kembangnya secara akurat. Cuma butuh 1 menit kok!"
 
 			_, err := notifUsecase.CreateNotifikasi(
 				ctx,
@@ -56,7 +56,7 @@ func SimpleCheck(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IU
 
 			if anak.ProteinHarian == 0 {
 
-				pesan := "Nutrisi anak belum terpenuhi, ayok isi data sang kecil agar dapat paham tumbuh besar sang buah hati"
+				pesan := "Nutrisi Harian Si Kecil sudah makan apa hari ini? 🍲 Nutrisi harian si Kecil masih kosong nih. Yuk, catat menu makannya sekarang agar Ayah & Bunda tahu apakah kebutuhan proteinnya sudah terpenuhi!"
 
 				_, err := notifUsecase.CreateNotifikasi(
 					ctx,
