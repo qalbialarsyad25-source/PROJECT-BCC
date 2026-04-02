@@ -24,6 +24,25 @@ func NewUserUsecase(userRepository repository.IUserRepository) *UserUsecase {
 	return &UserUsecase{userRepository}
 }
 
+func (p *UserUsecase) GetProfile(ctx context.Context, id uuid.UUID) (*model.UserResponse, error) {
+	user, err := p.UserRepository.GetUserById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, errors.New("user tidak ditemukan")
+	}
+
+	return &model.UserResponse{
+		Id:       user.Id,
+		Nama:     user.Nama,
+		Email:    user.Email,
+		UserName: user.UserName,
+		Profil:   user.Profil,
+	}, nil
+}
+
 func (p *UserUsecase) UploadFotoUser(ctx context.Context, userID uuid.UUID, file multipart.File, filename string) (string, error) {
 
 	user, err := p.UserRepository.GetUserById(ctx, userID)
@@ -44,23 +63,4 @@ func (p *UserUsecase) UploadFotoUser(ctx context.Context, userID uuid.UUID, file
 	}
 
 	return url, nil
-}
-
-func (p *UserUsecase) GetProfile(ctx context.Context, id uuid.UUID) (*model.UserResponse, error) {
-	user, err := p.UserRepository.GetUserById(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	if user == nil {
-		return nil, errors.New("user tidak ditemukan")
-	}
-
-	return &model.UserResponse{
-		Id:       user.Id,
-		Nama:     user.Nama,
-		Email:    user.Email,
-		UserName: user.UserName,
-		Profil:   user.Profil,
-	}, nil
 }

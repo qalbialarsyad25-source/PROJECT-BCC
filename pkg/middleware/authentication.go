@@ -20,7 +20,15 @@ func (m *Middleware) Authentication(c *gin.Context) {
 		return
 	}
 
-	token := strings.Split(header, " ")[1]
+	parts := strings.Split(header, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid authorization format",
+		})
+		return
+	}
+
+	token := parts[1]
 	userIdStr, role, err := m.jwt.ValidateToken(token)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{

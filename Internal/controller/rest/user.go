@@ -22,7 +22,7 @@ func (r *V1) GetProfile(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-func (r *V1) UploadFotoUser(c *gin.Context) {
+func (r *V1) UploadFoto(c *gin.Context) {
 	userID := c.MustGet("userId").(uuid.UUID)
 
 	file, err := c.FormFile("file")

@@ -21,6 +21,7 @@ type IUserRepository interface {
 	UpdatePassword(ctx context.Context, userID uuid.UUID, password string) error
 	ClearResetToken(ctx context.Context, userID uuid.UUID) error
 	UpdateUser(ctx context.Context, user *entity.User) error
+	GetAll(ctx context.Context) ([]entity.User, error)
 }
 
 type UserRepository struct {
@@ -126,4 +127,15 @@ func (p *UserRepository) GetUserById(ctx context.Context, id uuid.UUID) (*entity
 
 func (p *UserRepository) UpdateUser(ctx context.Context, user *entity.User) error {
 	return p.db.WithContext(ctx).Save(&user).Error
+}
+
+func (p *UserRepository) GetAll(ctx context.Context) ([]entity.User, error) {
+	var users []entity.User
+
+	err := p.db.WithContext(ctx).Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

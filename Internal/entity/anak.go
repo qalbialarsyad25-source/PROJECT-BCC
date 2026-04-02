@@ -28,4 +28,5 @@ type Anak struct {
 	LemakHarian     float64   `gorm:"type:decimal(10,2); not null"`
 	BMI             float64
 	StatusGizi      string
+	Profil          string `gorm:"type:text"`
 }

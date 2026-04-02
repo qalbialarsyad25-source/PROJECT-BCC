@@ -100,7 +100,7 @@ func (p *V1) EditDokter(c *gin.Context) {
 	}
 
 	var edit model.EditDokter
-	err = c.ShouldBindBodyWithJSON(&edit)
+	err = c.ShouldBindJSON(&edit)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return

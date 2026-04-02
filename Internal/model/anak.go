@@ -52,6 +52,7 @@ type AnakResponse struct {
 	RiwayatPenyakit string    `json:"riwayat_penyakit"`
 	BMI             float64   `json:"bmi"`
 	StatusGizi      string    `json:"status"`
+	Profil          string    `json:"profil"`
 }
 
 func (p *EditDataAnak) ToMap() map[string]any {
@@ -114,7 +115,7 @@ func ToAnakResponse(Anak entity.Anak) AnakResponse {
 		BeratBadan:      Anak.BeratBadan,
 		Gender:          Anak.Gender,
 		AnakKe:          Anak.AnakKe,
-		AnakKeLabel:     AnakKeToLabel(int(Anak.AnakKe)),
+		AnakKeLabel:     LabelAnakKe(int(Anak.AnakKe)),
 		LingkarKepala:   Anak.LingkarKepala,
 		LingkarLengan:   Anak.LingkarLengan,
 		GolonganDarah:   Anak.GolonganDarah,
@@ -122,6 +123,7 @@ func ToAnakResponse(Anak entity.Anak) AnakResponse {
 		RiwayatPenyakit: Anak.RiwayatPenyakit,
 		BMI:             Anak.BMI,
 		StatusGizi:      Anak.StatusGizi,
+		Profil:          Anak.Profil,
 	}
 }
 
@@ -134,7 +136,7 @@ func ToAnakResponses(Anak []entity.Anak) []AnakResponse {
 	return responses
 }
 
-func AnakKeToLabel(n int) string {
+func LabelAnakKe(n int) string {
 	labels := []string{
 		"Pertama", "Kedua", "Ketiga",
 	}

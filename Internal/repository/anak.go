@@ -14,7 +14,9 @@ type IAnakRepository interface {
 	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]entity.Anak, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
 	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
-	GetAnakByID(ctx context.Context, id uuid.UUID) (entity.Anak, error)
+	GetAnakByID(ctx context.Context, id uuid.UUID) (*entity.Anak, error)
+	UpdateAnak(ctx context.Context, anak *entity.Anak) error
+	FindUserById(ctx context.Context, userID uuid.UUID) ([]entity.Anak, error)
 }
 
 type AnakRepository struct {
@@ -76,12 +78,35 @@ func (p *AnakRepository) EditDataAnak(ctx context.Context, id uuid.UUID, edit mo
 	return nil
 }
 
-func (p *AnakRepository) GetAnakByID(ctx context.Context, id uuid.UUID) (entity.Anak, error) {
+func (p *AnakRepository) GetAnakByID(ctx context.Context, id uuid.UUID) (*entity.Anak, error) {
 	var anak entity.Anak
 
 	err := p.db.WithContext(ctx).
 		Where("id = ?", id).
 		First(&anak).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &anak, err
+}
+
+func (p *AnakRepository) UpdateAnak(ctx context.Context, anak *entity.Anak) error {
+	return p.db.WithContext(ctx).
+		Model(&entity.Anak{}).
+		Where("id = ?", anak.Id).
+		Updates(map[string]interface{}{
+			"profil": anak.Profil,
+		}).Error
+}
+
+func (p *AnakRepository) FindUserById(ctx context.Context, userID uuid.UUID) ([]entity.Anak, error) {
+	var anak []entity.Anak
+
+	err := p.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		Find(&anak).Error
 
 	return anak, err
 }

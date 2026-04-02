@@ -5,8 +5,10 @@ import (
 	"bcc-geazy/internal/model"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/internal/utils"
+	"bcc-geazy/pkg/storage"
 	"context"
 	"errors"
+	"mime/multipart"
 	"strings"
 	"time"
 
@@ -18,6 +20,8 @@ type IAnakUsecase interface {
 	GetDataAnak(ctx context.Context, pagination model.Pagination) ([]model.AnakResponse, error)
 	DeleteDataAnak(ctx context.Context, id uuid.UUID) error
 	EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error
+	UploadFotoAnak(ctx context.Context, userID uuid.UUID, anakID uuid.UUID, file multipart.File, filename string) (string, error)
+	GetProfileAnak(ctx context.Context, userID uuid.UUID, anakID uuid.UUID) (*model.AnakResponse, error)
 }
 
 type AnakUsecase struct {
@@ -97,4 +101,44 @@ func (p *AnakUsecase) DeleteDataAnak(ctx context.Context, id uuid.UUID) error {
 
 func (p *AnakUsecase) EditDataAnak(ctx context.Context, id uuid.UUID, edit model.EditDataAnak) error {
 	return p.AnakRepository.EditDataAnak(ctx, id, edit)
+}
+
+func (p *AnakUsecase) UploadFotoAnak(ctx context.Context, userID uuid.UUID, anakID uuid.UUID, file multipart.File, filename string) (string, error) {
+
+	anak, err := p.AnakRepository.GetAnakByID(ctx, anakID)
+	if err != nil {
+		return "", err
+	}
+
+	if anak.UserID != userID {
+		return "", errors.New("unauthorized")
+	}
+
+	url, err := storage.UploadFile(file, filename)
+	if err != nil {
+		return "", err
+	}
+
+	anak.Profil = url
+
+	err = p.AnakRepository.UpdateAnak(ctx, anak)
+	if err != nil {
+		return "", err
+	}
+
+	return url, nil
+}
+func (u *AnakUsecase) GetProfileAnak(ctx context.Context, userID uuid.UUID, anakID uuid.UUID) (*model.AnakResponse, error) {
+
+	anak, err := u.AnakRepository.GetAnakByID(ctx, anakID)
+	if err != nil {
+		return nil, err
+	}
+
+	if anak.UserID != userID {
+		return nil, errors.New("unauthorized")
+	}
+
+	response := model.ToAnakResponse(*anak)
+	return &response, nil
 }

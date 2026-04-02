@@ -24,7 +24,7 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 		user := api.Group("/user")
 		{
 			user.GET("/profile", v1.IMiddleware.Authentication, v1.GetProfile)
-			user.POST("/upload", v1.IMiddleware.Authentication, v1.UploadFotoUser)
+			user.POST("/upload", v1.IMiddleware.Authentication, v1.UploadFoto)
 		}
 
 		anak := api.Group("/anak")
@@ -33,6 +33,8 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 			anak.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin", "user"), v1.CreateDataAnak)
 			anak.DELETE("/:id", v1.DeleteDataAnak)
 			anak.PATCH("/:id", v1.EditDataAnak)
+			anak.GET("/:id", v1.IMiddleware.Authentication, v1.GetProfileAnak)
+			anak.POST("/:id/upload", v1.IMiddleware.Authentication, v1.UploadFotoAnak)
 
 			nutrisi := anak.Group("/nutrisi")
 			{
@@ -51,7 +53,6 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 				log.POST("", v1.IMiddleware.Authentication, v1.CreateLog)
 				log.DELETE("/:logId", v1.DeleteLog)
 			}
-
 		}
 
 		informasi := api.Group("/informasi")
@@ -94,10 +95,10 @@ func NewRouter(app *gin.Engine, v1 *V1, wsManager *websocket.WSManager) {
 
 		notifikasi := api.Group("/notifikasi")
 		{
-			notifikasi.GET("", v1.GetNotifikasi)
-			notifikasi.POST("", v1.CreateNotifikasi)
-			notifikasi.DELETE("/:id", v1.DeleteNotifikasi)
-			notifikasi.PATCH("/:id", v1.EditNotifikasi)
+			notifikasi.GET("", v1.IMiddleware.Authentication, v1.GetNotifikasi)
+			notifikasi.POST("", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.CreateNotifikasi)
+			notifikasi.DELETE("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.DeleteNotifikasi)
+			notifikasi.PATCH("/:id", v1.IMiddleware.Authentication, v1.IMiddleware.Authorization("admin"), v1.EditNotifikasi)
 		}
 
 	}

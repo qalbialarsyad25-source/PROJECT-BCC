@@ -3,6 +3,7 @@ package app
 import (
 	websocket "bcc-geazy/internal/controller/delivery"
 	"bcc-geazy/internal/controller/rest"
+	"bcc-geazy/internal/jadwal"
 	"bcc-geazy/internal/repository"
 	"bcc-geazy/internal/seeder"
 	"bcc-geazy/internal/usecase"
@@ -38,6 +39,12 @@ func Run() {
 	uc := usecase.NewUsecase(jwtInit, bcryptService, oauthConfig, repo, wsManager)
 	v1 := rest.NewV1(mw, validator, uc, wsManager)
 	rest.NewRouter(app, v1, wsManager)
+
+	jadwal.StartCron(
+		uc.NotifikasiUsecase,
+		repo.UserRepository,
+		repo.AnakRepository,
+	)
 
 	if err := app.Run(":" + os.Getenv("APP_PORT")); err != nil {
 		log.Fatalf("Gagal start server : %s", err.Error())

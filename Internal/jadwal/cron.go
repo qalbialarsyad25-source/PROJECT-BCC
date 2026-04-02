@@ -1,0 +1,76 @@
+package jadwal
+
+import (
+	"bcc-geazy/internal/model"
+	"bcc-geazy/internal/repository"
+	"bcc-geazy/internal/usecase"
+	"bcc-geazy/pkg/email"
+	"context"
+
+	"github.com/robfig/cron/v3"
+)
+
+func StartCron(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IUserRepository, anakRepo repository.IAnakRepository) {
+	c := cron.New()
+
+	c.AddFunc("0 8 * * *", func() {
+		SimpleCheck(notifUsecase, userRepo, anakRepo)
+	})
+
+	c.Start()
+}
+
+func SimpleCheck(notifUsecase usecase.INotifikasiUsecase, userRepo repository.IUserRepository, anakRepo repository.IAnakRepository) {
+	ctx := context.Background()
+
+	users, err := userRepo.GetAll(ctx)
+	if err != nil {
+		return
+	}
+
+	for _, user := range users {
+
+		anakList, _ := anakRepo.FindUserById(ctx, user.Id)
+
+		if len(anakList) == 0 {
+
+			pesan := "Anda belum mengisi data anak, ayo isi sekarang!"
+
+			_, err := notifUsecase.CreateNotifikasi(
+				ctx,
+				user.Id,
+				model.BuatNotifikasi{
+					Judul: "Lengkapi Data Anak",
+					Pesan: pesan,
+				},
+			)
+
+			if err == nil {
+				_ = email.SendEmail(user.Email, "Lengkapi Data Anak", pesan)
+			}
+
+			continue
+		}
+
+		for _, anak := range anakList {
+
+			if anak.ProteinHarian == 0 {
+
+				pesan := "Nutrisi anak belum terpenuhi, ayok isi data sang kecil agar dapat paham tumbuh besar sang buah hati"
+
+				_, err := notifUsecase.CreateNotifikasi(
+					ctx,
+					user.Id,
+					model.BuatNotifikasi{
+						Judul: "Peringatan Nutrisi",
+						Pesan: pesan,
+					},
+				)
+
+				if err == nil {
+					_ = email.SendEmail(user.Email, "Peringatan Nutrisi", pesan)
+				}
+			}
+		}
+	}
+}

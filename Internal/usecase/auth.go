@@ -88,6 +88,10 @@ func (u *AuthUsecase) Login(ctx context.Context, a model.UserLogin) (string, err
 		return "", err
 	}
 
+	if user == nil {
+		return "", errors.New("email atau password salah")
+	}
+
 	err = u.Bcrypt.ValidatePassword(user.Password, a.Password)
 	if err != nil {
 		return "", err

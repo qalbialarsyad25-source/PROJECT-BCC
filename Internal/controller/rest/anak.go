@@ -2,6 +2,8 @@ package rest
 
 import (
 	"bcc-geazy/internal/model"
+	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -49,11 +51,11 @@ func (p *V1) GetDataAnak(c *gin.Context) {
 }
 
 func (p *V1) CreateDataAnak(c *gin.Context) {
-	var create model.TambahDataAnak
+	var buat model.TambahDataAnak
 
 	userID := c.MustGet("userId").(uuid.UUID)
 
-	err := c.ShouldBindBodyWithJSON(&create)
+	err := c.ShouldBindBodyWithJSON(&buat)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -61,7 +63,7 @@ func (p *V1) CreateDataAnak(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	anak, err := p.usecase.AnakUsecase.CreateDataAnak(ctx, create, userID)
+	anak, err := p.usecase.AnakUsecase.CreateDataAnak(ctx, buat, userID)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -152,17 +154,17 @@ func (p *V1) GetAnakKeOptions(c *gin.Context) {
 		"Ketiga",
 	}
 
-	var options []map[string]any
+	var pilihan []map[string]any
 
 	for i, label := range labels {
-		options = append(options, map[string]any{
+		pilihan = append(pilihan, map[string]any{
 			"label": "Anak " + label,
 			"value": i + 1,
 		})
 	}
 
 	c.JSON(200, gin.H{
-		"data": options,
+		"data": pilihan,
 	})
 }
 
@@ -182,4 +184,72 @@ func (p *V1) GetNutrisiHarian(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
+
+func (r *V1) UploadFotoAnak(c *gin.Context) {
+	userID := c.MustGet("userId").(uuid.UUID)
+	anakID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid anak id"})
+		return
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(400, gin.H{"error": "file tidak ditemukan"})
+		return
+	}
+
+	ext := strings.ToLower(filepath.Ext(file.Filename))
+	if ext != ".jpg" && ext != ".jpeg" && ext != ".png" {
+		c.JSON(400, gin.H{"error": "format harus jpg/png"})
+		return
+	}
+
+	if file.Size > 2*1024*1024 {
+		c.JSON(400, gin.H{"error": "maksimal 2MB"})
+		return
+	}
+
+	f, err := file.Open()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "gagal buka file"})
+		return
+	}
+	defer f.Close()
+
+	filename := uuid.New().String() + ext
+
+	ctx := c.Request.Context()
+
+	url, err := r.usecase.AnakUsecase.UploadFotoAnak(ctx, userID, anakID, f, filename)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "foto berhasil diupload",
+		"url":     url,
+	})
+}
+
+func (r *V1) GetProfileAnak(c *gin.Context) {
+	userID := c.MustGet("userId").(uuid.UUID)
+
+	anakID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid anak id"})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	anak, err := r.usecase.AnakUsecase.GetProfileAnak(ctx, userID, anakID)
+	if err != nil {
+		c.JSON(403, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, anak)
 }

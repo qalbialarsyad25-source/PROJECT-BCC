@@ -13,7 +13,6 @@ import (
 )
 
 func (p *V1) GetLogInformasi(c *gin.Context) {
-	userId := c.MustGet("userId").(uuid.UUID)
 
 	lembar, err := strconv.Atoi(c.DefaultQuery("lembar", "1"))
 	if err != nil {
@@ -34,8 +33,12 @@ func (p *V1) GetLogInformasi(c *gin.Context) {
 
 	pagination.Check()
 
+	userID := c.MustGet("userId").(uuid.UUID)
+	informasiID, _ := uuid.Parse(c.Query("informasiId"))
+
 	ctx := c.Request.Context()
-	LogInformasi, err := p.usecase.LogInformasiUsecase.GetLogInformasi(ctx, userId, pagination)
+	LogInformasi, err := p.usecase.LogInformasiUsecase.GetLogInformasi(ctx, userID, informasiID, pagination)
+
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return

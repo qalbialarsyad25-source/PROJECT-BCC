@@ -7,7 +7,7 @@ import (
 )
 
 type BuatLogInformasi struct {
-	InformasiID uuid.UUID `json:"informasi_id"`
+	InformasiId uuid.UUID `json:"informasi_id"`
 }
 
 type LogInformasiResponse struct {

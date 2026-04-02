@@ -24,6 +24,9 @@ func NewLogMakananRepository(db *gorm.DB) *LogMakananRepository {
 
 func (p *LogMakananRepository) GetLogMakanan(ctx context.Context, pagination model.Pagination) ([]entity.LogMakanan, error) {
 	logmakanan, err := gorm.G[entity.LogMakanan](p.db).
+		Preload("makanan", func(db gorm.PreloadBuilder) error {
+			return nil
+		}).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
 		Order("Dibuat_pada ").

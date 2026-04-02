@@ -11,7 +11,7 @@ import (
 )
 
 type ILogInformasiRepository interface {
-	GetLogInformasi(ctx context.Context, AnakID uuid.UUID, pagination model.Pagination) ([]entity.LogInformasi, error)
+	GetLogInformasi(ctx context.Context, userID uuid.UUID, informasiID uuid.UUID, pagination model.Pagination) ([]entity.LogInformasi, error)
 	DeleteLogInformasi(ctx context.Context, id uuid.UUID) error
 	CreateLogInformasi(ctx context.Context, loginfo entity.LogInformasi) error
 	GetById(ctx context.Context, id uuid.UUID) (*entity.LogInformasi, error)
@@ -25,12 +25,12 @@ func NewLogInformasiRepository(db *gorm.DB) *LogInformasiRepository {
 	return &LogInformasiRepository{db}
 }
 
-func (p *LogInformasiRepository) GetLogInformasi(ctx context.Context, userID uuid.UUID, pagination model.Pagination) ([]entity.LogInformasi, error) {
+func (p *LogInformasiRepository) GetLogInformasi(ctx context.Context, userID uuid.UUID, informasiID uuid.UUID, pagination model.Pagination) ([]entity.LogInformasi, error) {
 	logs, err := gorm.G[entity.LogInformasi](p.db).
 		Preload("Informasi", func(db gorm.PreloadBuilder) error {
 			return nil
 		}).
-		Where("user_id = ? AND informasi_id = ?", userID).
+		Where("user_id = ? AND informasi_id = ?", userID, informasiID).
 		Limit(pagination.Limit).
 		Offset(pagination.Offset()).
 		Find(ctx)
