@@ -131,6 +131,10 @@ func (u *AuthUsecase) GoogleCallback(ctx context.Context, code string) (string, 
 
 	user, err := u.UserRepository.GetUserByEmail(ctx, googleUser.Email)
 	if err != nil {
+		return "", nil
+	}
+
+	if err == nil {
 		user = &entity.User{
 			Id:       uuid.New(),
 			Email:    googleUser.Email,
