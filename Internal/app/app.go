@@ -47,6 +47,8 @@ func Run() {
 
 	jwtInit := jwt.NewJWT()
 	bcryptService := bcrypt.NewBcrypt()
+	seeder.SeedDokter(db, bcryptService)
+	seeder.SeedInformasi(db)
 	oauthConfig := oauth.GoogleOAuthConfig()
 	mw := middleware.NewMiddleware(jwtInit)
 	validator := validator.New()
