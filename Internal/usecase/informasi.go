@@ -28,7 +28,7 @@ func NewInformasiUsecase(informasiRepository repository.IInformasiRepository) *I
 func (p *InformasiUsecase) CreateInformasi(ctx context.Context, userID uuid.UUID, buatInformasi model.BuatInformasi) (*model.InformasiResponse, error) {
 	informasi := entity.Informasi{
 		Id:         uuid.New(),
-		UserID:     userID,
+		UserID:     nil,
 		Ringkasan:  buatInformasi.Ringkasan,
 		Judul:      buatInformasi.Judul,
 		DibuatPada: time.Now(),

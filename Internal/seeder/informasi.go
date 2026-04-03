@@ -9,8 +9,9 @@ import (
 
 func SeedInformasi(db *gorm.DB) {
 	info := entity.Informasi{
-		Id:    uuid.New(),
-		Judul: "5 Cara Mudah Membiasakan Gaya Hidup Sehat pada Anak",
+		Id:     uuid.New(),
+		UserID: nil,
+		Judul:  "5 Cara Mudah Membiasakan Gaya Hidup Sehat pada Anak",
 		Ringkasan: `Membangun kebiasaan sehat pada anak memang butuh kesabaran ekstra, apalagi di tengah kesibukan Ayah dan Bunda sehari-hari. Namun, kebiasaan yang ditanamkan sejak dini akan menjadi fondasi kuat bagi tumbuh kembang mereka di masa depan.
 
 Yuk, terapkan 5 langkah sederhana ini untuk memulai gaya hidup sehat di rumah!
