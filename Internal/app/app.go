@@ -34,7 +34,7 @@ func Run() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
-			"https://be-internship.bccdev.id/qalbi",
+			"https://be-internship.bccdev.id",
 			"https://geazy.vercel.app",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
